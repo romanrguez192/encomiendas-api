@@ -14,7 +14,6 @@ CREATE TABLE Clientes(
 	cedula VARCHAR(16) NOT NULL,
 	nombre VARCHAR(20) NOT NULL,
 	apellido VARCHAR(20) NOT NULL,
-	saldo DECIMAL(12, 2) NOT NULL CHECK(saldo >= 0),
 	telefono VARCHAR(16) NOT NULL,
 	telefonoAlternativo VARCHAR(16),
 	email VARCHAR(64) NOT NULL,
@@ -26,7 +25,7 @@ CREATE TABLE Recargas(
 	id INT NOT NULL AUTO_INCREMENT,
 	precio DECIMAL(12, 2) NOT NULL CHECK(precio >= 0),
 	fecha DATE NOT NULL,
-	cantidadSaldo DECIMAL(12, 2) NOT NULL CHECK(cantidadSaldo >= 0),
+	saldo DECIMAL(12, 2) NOT NULL CHECK(saldo >= 0),
 	cedulaCliente VARCHAR(16) NOT NULL,
 	PRIMARY KEY(id),
 	FOREIGN KEY(cedulaCliente) REFERENCES Clientes(cedula)
@@ -46,7 +45,6 @@ CREATE TABLE Transportadores(
 	cedula VARCHAR(16) NOT NULL,
 	nombre VARCHAR(20) NOT NULL,
 	apellido VARCHAR(20) NOT NULL,
-	saldo DECIMAL(12, 2) NOT NULL CHECK(saldo >= 0),
 	telefono VARCHAR(16) NOT NULL,
 	telefonoAlternativo VARCHAR(16),
 	email VARCHAR(64) NOT NULL,
@@ -58,6 +56,21 @@ CREATE TABLE Transportadores(
 	PRIMARY KEY(cedula),
 	FOREIGN KEY(idNucleo) REFERENCES Nucleos(id)
 	ON DELETE RESTRICT ON UPDATE CASCADE	
+);
+
+-- Tabla de Retiros de clientes y transportadores
+CREATE TABLE Retiros(
+	id INT NOT NULL AUTO_INCREMENT,
+	precio DECIMAL(12, 2) NOT NULL CHECK(precio >= 0),
+	fecha DATE NOT NULL,
+	saldo DECIMAL(12, 2) NOT NULL CHECK(saldo >= 0),
+	cedulaCliente VARCHAR(16),
+	cedulaTransportador VARCHAR(16),
+	PRIMARY KEY(id),
+	FOREIGN KEY(cedulaCliente) REFERENCES Clientes(cedula)
+	ON DELETE CASCADE ON UPDATE CASCADE,
+	FOREIGN KEY(cedulaTransportador) REFERENCES Transportadores(cedula)
+	ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- Tabla de Cursos para los transportadores
