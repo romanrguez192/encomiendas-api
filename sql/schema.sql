@@ -24,7 +24,7 @@ CREATE TABLE Clientes(
 CREATE TABLE Recargas(
 	id INT NOT NULL AUTO_INCREMENT,
 	precio DECIMAL(12, 2) NOT NULL CHECK(precio >= 0),
-	fecha DATE NOT NULL,
+	fecha DATE NOT NULL DEFAULT (CURRENT_DATE),
 	saldo DECIMAL(12, 2) NOT NULL CHECK(saldo >= 0),
 	cedulaCliente VARCHAR(16) NOT NULL,
 	PRIMARY KEY(id),
@@ -62,7 +62,7 @@ CREATE TABLE Transportadores(
 CREATE TABLE Retiros(
 	id INT NOT NULL AUTO_INCREMENT,
 	precio DECIMAL(12, 2) NOT NULL CHECK(precio >= 0),
-	fecha DATE NOT NULL,
+	fecha DATE NOT NULL DEFAULT (CURRENT_DATE),
 	saldo DECIMAL(12, 2) NOT NULL CHECK(saldo >= 0),
 	cedulaCliente VARCHAR(16),
 	cedulaTransportador VARCHAR(16),
@@ -90,6 +90,13 @@ CREATE TABLE Vehiculos(
 	modelo VARCHAR(20),
 	placa VARCHAR(10),
 	cedulaTransportador VARCHAR(16) NOT NULL,
+	-- Marca, modelo y placa son NOT NULL para motor, pero para bicicleta son NULL
+	CONSTRAINT tipoVehiculoValido
+	CHECK(
+		((tipo != 'motor') OR (modelo IS NOT NULL AND marca IS NOT NULL AND placa IS NOT NULL))
+		AND
+		((tipo != 'bicicleta') OR (modelo IS NULL AND marca IS NULL AND placa IS NULL))
+	),
 	PRIMARY KEY(id),
 	FOREIGN KEY(cedulaTransportador) REFERENCES Transportadores(cedula)
 	ON DELETE RESTRICT ON UPDATE CASCADE
@@ -103,6 +110,11 @@ CREATE TABLE Vuelos(
 	fechaHoraLlegada TIMESTAMP,
 	descripcionRetraso VARCHAR(255),
 	duracionRetraso INTEGER,
+	-- Si hubo retraso, ambos campos son NOT NULL, de lo contrario ambos son NULL
+	CONSTRAINT retrasoValido
+	CHECK(NOT(descripcionRetraso IS NULL XOR duracionRetraso IS NULL)),
+	CONSTRAINT fechasVueloValidas
+	CHECK(fechaHoraSalida < fechaHoraLlegada),
 	PRIMARY KEY(id)	
 );
 
@@ -111,7 +123,7 @@ CREATE TABLE Encomiendas(
 	id INT NOT NULL AUTO_INCREMENT,
 	cedulaEmisor VARCHAR(16) NOT NULL,
 	cedulaReceptor VARCHAR(16) NOT NULL,
-	tipo VARCHAR(10) NOT NULL CHECK(tipo IN ('terrestre', 'aereo')),
+	tipo VARCHAR(10) NOT NULL CHECK(tipo IN ('terrestre', 'aerea')),
 	status VARCHAR(10) NOT NULL,
 	fechaHoraSalida TIMESTAMP NOT NULL,
 	fechaHoraLlegada TIMESTAMP,
@@ -119,6 +131,8 @@ CREATE TABLE Encomiendas(
 	idNucleoDestino INT NOT NULL,
 	cedulaTransportador VARCHAR(16) NOT NULL,
 	idVuelo INT,
+	CONSTRAINT fechasEncomiendaValidas
+	CHECK(fechaHoraSalida < fechaHoraLlegada),
 	PRIMARY KEY(id),
 	FOREIGN KEY (cedulaEmisor) REFERENCES Clientes(cedula)
 	ON DELETE RESTRICT ON UPDATE CASCADE,
@@ -131,7 +145,7 @@ CREATE TABLE Encomiendas(
 	FOREIGN KEY(cedulaTransportador) REFERENCES Transportadores(cedula)
 	ON DELETE RESTRICT ON UPDATE CASCADE,
 	FOREIGN KEY(idVuelo) REFERENCES Vuelos(id)
-	ON DELETE SET NULL ON UPDATE CASCADE
+	ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
 -- Tabla de Paquetes de una encomienda
