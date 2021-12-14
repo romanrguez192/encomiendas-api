@@ -14,7 +14,7 @@ BEGIN
 	SET tieneVehiculos = EXISTS(
 		SELECT *
 		FROM Vehiculos AS v
-		WHERE v.cedulaTransportador = cedulaTransportador;
+		WHERE v.cedulaTransportador = cedulaTransportador
 	);
 
 	IF tieneVehiculos THEN
@@ -87,7 +87,7 @@ BEGIN
 	SET realizoCursos = EXISTS(
 		SELECT *
 		FROM CursosRealizados AS cr
-		WHERE cr.cedulaTransportador = cedulaTransportador;
+		WHERE cr.cedulaTransportador = cedulaTransportador
 	);
 
 	IF NOT realizoCursos THEN

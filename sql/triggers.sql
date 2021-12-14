@@ -64,7 +64,7 @@ BEGIN
     END IF;
 END$$
 
-CREATE TRIGGER TriggerVehiculosInsert
+CREATE TRIGGER TriggerVehiculosUpdate
 BEFORE UPDATE
 ON Vehiculos FOR EACH ROW
 BEGIN
