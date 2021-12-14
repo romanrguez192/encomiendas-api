@@ -1,6 +1,6 @@
 DELIMITER $$
 
-CREATE PROCEDURE validarFechaIngreso(fechaIngreso DATE)
+CREATE PROCEDURE validarFechaIngresoTransportador(fechaIngreso DATE)
 BEGIN
 	IF fechaIngreso > CURDATE() THEN
 		SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Fecha de ingreso inválida';
@@ -20,6 +20,20 @@ BEGIN
 		SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Encomienda aerea inválida';
 	ELSEIF tipo = 'terrestre' AND idVuelo IS NOT NULL THEN
 		SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Encomienda terrestre inválida';
+	END IF;
+END$$
+
+CREATE PROCEDURE validarClientesEncomienda(cedulaEmisor VARCHAR(16), cedulaReceptor VARCHAR(16))
+BEGIN
+	IF cedulaEmisor = cedulaReceptor THEN
+		SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Encomienda inválida, el emisor debe ser diferente al receptor';
+	END IF;
+END$$
+
+CREATE PROCEDURE validarNucleosEncomienda(idNucleoOrigen INT, idNucleoDestino INT)
+BEGIN
+	IF idNucleoOrigen = idNucleoDestino THEN
+		SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Encomienda inválida, los núcleos deben ser diferentes';
 	END IF;
 END$$
 
