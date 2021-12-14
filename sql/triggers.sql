@@ -14,6 +14,9 @@ BEFORE UPDATE
 ON Transportadores FOR EACH ROW
 BEGIN
     CALL validarFechaIngresoTransportador(NEW.fechaIngreso);
+    IF NEW.licencia = FALSE THEN
+        CALL validarInexistenciaVehiculos(NEW.cedula);
+    END IF;
 END$$
 
 CREATE TRIGGER TriggerRetirosInsert
@@ -37,6 +40,8 @@ BEGIN
     CALL validarTipoEncomienda(NEW.tipo, NEW.idVuelo);
     CALL validarClientesEncomienda(NEW.cedulaEmisor, NEW.cedulaReceptor);
     CALL validarNucleosEncomienda(NEW.idNucleoOrigen, NEW.idNucleoDestino);
+    CALL validarDisponibilidadTransportador(NEW.cedulaTransportador);
+    CALL validarCapacitacionTransportador(NEW.cedulaTransportador);
 END$$
 
 CREATE TRIGGER TriggerEncomiendasUpdate
@@ -46,6 +51,26 @@ BEGIN
     CALL validarTipoEncomienda(NEW.tipo, NEW.idVuelo);
     CALL validarClientesEncomienda(NEW.cedulaEmisor, NEW.cedulaReceptor);
     CALL validarNucleosEncomienda(NEW.idNucleoOrigen, NEW.idNucleoDestino);
+    CALL validarDisponibilidadTransportador(NEW.cedulaTransportador);
+    CALL validarCapacitacionTransportador(NEW.cedulaTransportador);
+END$$
+
+CREATE TRIGGER TriggerVehiculosInsert
+BEFORE INSERT
+ON Vehiculos FOR EACH ROW
+BEGIN
+    IF NEW.tipo = 'motor' THEN
+        CALL validarLicenciaTransportador(NEW.cedulaTransportador);
+    END IF;
+END$$
+
+CREATE TRIGGER TriggerVehiculosInsert
+BEFORE UPDATE
+ON Vehiculos FOR EACH ROW
+BEGIN
+    IF NEW.tipo = 'motor' THEN
+        CALL validarLicenciaTransportador(NEW.cedulaTransportador);
+    END IF;
 END$$
 
 DELIMITER ;

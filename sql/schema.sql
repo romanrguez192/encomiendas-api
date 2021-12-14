@@ -16,7 +16,7 @@ CREATE TABLE Clientes(
 	apellido VARCHAR(20) NOT NULL,
 	telefono VARCHAR(16) NOT NULL,
 	telefonoAlternativo VARCHAR(16),
-	email VARCHAR(64) NOT NULL,
+	email VARCHAR(64) UNIQUE NOT NULL,
 	PRIMARY KEY(cedula)
 );
 
@@ -47,7 +47,7 @@ CREATE TABLE Transportadores(
 	apellido VARCHAR(20) NOT NULL,
 	telefono VARCHAR(16) NOT NULL,
 	telefonoAlternativo VARCHAR(16),
-	email VARCHAR(64) NOT NULL,
+	email VARCHAR(64) UNIQUE NOT NULL,
 	fechaIngreso DATE NOT NULL,
 	disponible BOOLEAN NOT NULL,
 	antecedentesPenales BOOLEAN NOT NULL,
