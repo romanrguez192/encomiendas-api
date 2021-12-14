@@ -105,7 +105,8 @@ CREATE TABLE Vehiculos(
 -- Tabla de Vuelos para encomiendas aéreas
 CREATE TABLE Vuelos(
 	id INT NOT NULL AUTO_INCREMENT,
-	duracionVuelo INT,
+	-- Duración del vuelo en minutos
+	duracionVuelo INT CHECK(duracionVuelo > 0),
 	fechaHoraSalida TIMESTAMP NOT NULL,
 	fechaHoraLlegada TIMESTAMP,
 	descripcionRetraso VARCHAR(255),
