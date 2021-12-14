@@ -184,4 +184,11 @@ CREATE TABLE Articulos(
 	FOREIGN KEY(idCurso) REFERENCES Cursos(id)
 	ON DELETE CASCADE ON UPDATE CASCADE	
  );
+
+ -- Tabla de Países
+ CREATE TABLE Paises(
+ 	id INT NOT NULL AUTO_INCREMENT,
+ 	nombre VARCHAR(50) NOT NULL,
+ 	PRIMARY KEY(id)
+ )
  
