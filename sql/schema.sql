@@ -115,9 +115,8 @@ CREATE TABLE Encomiendas(
 	status VARCHAR(10) NOT NULL,
 	fechaHoraSalida TIMESTAMP NOT NULL,
 	fechaHoraLlegada TIMESTAMP,
-	-- El idNucleo creo que es solo para los casos en que no lo recoge el cliente hmmm
-	-- Por eso le quité el NOT NULL
-	idNucleo INT,
+	idNucleoOrigen INT NOT NULL,
+	idNucleoDestino INT NOT NULL,
 	cedulaTransportador VARCHAR(16) NOT NULL,
 	idVuelo INT,
 	PRIMARY KEY(id),
@@ -125,8 +124,10 @@ CREATE TABLE Encomiendas(
 	ON DELETE RESTRICT ON UPDATE CASCADE,
 	FOREIGN KEY (cedulaReceptor) REFERENCES Clientes(cedula)
 	ON DELETE RESTRICT ON UPDATE CASCADE,
-	FOREIGN KEY(idNucleo) REFERENCES Nucleos(id)
-	ON DELETE SET NULL ON UPDATE CASCADE,	
+	FOREIGN KEY(idNucleoOrigen) REFERENCES Nucleos(id)
+	ON DELETE RESTRICT ON UPDATE CASCADE,
+	FOREIGN KEY(idNucleoDestino) REFERENCES Nucleos(id)
+	ON DELETE RESTRICT ON UPDATE CASCADE,	
 	FOREIGN KEY(cedulaTransportador) REFERENCES Transportadores(cedula)
 	ON DELETE RESTRICT ON UPDATE CASCADE,
 	FOREIGN KEY(idVuelo) REFERENCES Vuelos(id)
