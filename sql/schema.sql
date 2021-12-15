@@ -128,6 +128,8 @@ CREATE TABLE Vuelos(
 	duracionVuelo INT CHECK(duracionVuelo > 0),
 	fechaHoraSalida TIMESTAMP NOT NULL,
 	fechaHoraLlegada TIMESTAMP,
+	idDireccionOrigen INT NOT NULL,
+	idDireccionDestino INT NOT NULL,
 	descripcionRetraso VARCHAR(255),
 	duracionRetraso INTEGER,
 	-- Si hubo retraso, ambos campos son NOT NULL, de lo contrario ambos son NULL
@@ -135,7 +137,11 @@ CREATE TABLE Vuelos(
 	CHECK(NOT(descripcionRetraso IS NULL XOR duracionRetraso IS NULL)),
 	CONSTRAINT fechasVueloValidas
 	CHECK(fechaHoraSalida < fechaHoraLlegada),
-	PRIMARY KEY(id)	
+	PRIMARY KEY(id),
+	FOREIGN KEY(idDireccionOrigen) REFERENCES(Direcciones)
+	ON DELETE RESTRICT ON UPDATE CASCADE,
+	FOREIGN KEY(idDireccionDestino) REFERENCES(Direcciones)
+	ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
 -- Tabla de Encomiendas
