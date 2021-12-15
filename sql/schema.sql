@@ -9,6 +9,16 @@
 -- Para saldos: DECIMAL(12, 2) CHECK(VALUE >= 0)
 -- Para dimensiones, peso: DECIMAL(10, 2) CHECK(VALUE >= 0)
 
+ -- Tabla de Direcciones
+ CREATE TABLE Direcciones(
+ 	id INT NOT NULL AUTO_INCREMENT,
+ 	pais VARCHAR(50) NOT NULL,
+ 	estado VARCHAR(50) NOT NULL,
+ 	ciudad VARCHAR(50) NOT NULL,
+ 	parroquia VARCHAR(50) NOT NULL,
+ 	PRIMARY KEY(id)
+ );
+
 -- Tabla de Clientes
 CREATE TABLE Clientes(
 	cedula VARCHAR(16) NOT NULL,
@@ -17,7 +27,10 @@ CREATE TABLE Clientes(
 	telefono VARCHAR(16) NOT NULL,
 	telefonoAlternativo VARCHAR(16),
 	email VARCHAR(64) UNIQUE NOT NULL,
-	PRIMARY KEY(cedula)
+	idDireccion INT NOT NULL,
+	PRIMARY KEY(cedula),
+	FOREIGN KEY(idDireccion) REFERENCES(Direcciones)
+	ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
 -- Tabla de Recargas de un cliente
@@ -37,7 +50,10 @@ CREATE TABLE Nucleos(
 	id INT NOT NULL AUTO_INCREMENT,
 	nombre VARCHAR(50) NOT NULL,
 	telefono VARCHAR(16) NOT NULL,
-	PRIMARY KEY(id)
+	idDireccion INT NOT NULL,
+	PRIMARY KEY(id),
+	FOREIGN KEY(idDireccion) REFERENCES(Direcciones)
+	ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
 -- Tabla de Transportadores de la empresa
@@ -53,7 +69,10 @@ CREATE TABLE Transportadores(
 	antecedentesPenales BOOLEAN NOT NULL,
 	licencia BOOLEAN NOT NULL,
 	idNucleo INT NOT NULL,
+	idDireccion INT NOT NULL,
 	PRIMARY KEY(cedula),
+	FOREIGN KEY(idDireccion) REFERENCES(Direcciones)
+	ON DELETE RESTRICT ON UPDATE CASCADE,
 	FOREIGN KEY(idNucleo) REFERENCES Nucleos(id)
 	ON DELETE RESTRICT ON UPDATE CASCADE	
 );
@@ -132,6 +151,7 @@ CREATE TABLE Encomiendas(
 	idNucleoDestino INT NOT NULL,
 	cedulaTransportador VARCHAR(16) NOT NULL,
 	idVuelo INT,
+	precio DECIMAL(12, 2),
 	CONSTRAINT fechasEncomiendaValidas
 	CHECK(fechaHoraSalida < fechaHoraLlegada),
 	PRIMARY KEY(id),
@@ -158,6 +178,7 @@ CREATE TABLE Paquetes(
 	ancho DECIMAL(10,2) CHECK(ancho >= 0),
 	profundidad DECIMAL(10,2) CHECK(profundidad >= 0),
 	idEncomienda INT NOT NULL,
+	tarifa DECIMAL(12, 2) NOT NULL,
 	PRIMARY KEY(id),
 	FOREIGN KEY(idEncomienda) REFERENCES Encomiendas(id)
 	ON DELETE RESTRICT ON UPDATE CASCADE
@@ -184,11 +205,4 @@ CREATE TABLE Articulos(
 	FOREIGN KEY(idCurso) REFERENCES Cursos(id)
 	ON DELETE CASCADE ON UPDATE CASCADE	
  );
-
- -- Tabla de Países
- CREATE TABLE Paises(
- 	id INT NOT NULL AUTO_INCREMENT,
- 	nombre VARCHAR(50) NOT NULL,
- 	PRIMARY KEY(id)
- )
  
