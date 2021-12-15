@@ -150,7 +150,7 @@ CREATE TABLE Encomiendas(
 	cedulaEmisor VARCHAR(16) NOT NULL,
 	cedulaReceptor VARCHAR(16) NOT NULL,
 	tipo VARCHAR(10) NOT NULL CHECK(tipo IN ('terrestre', 'aerea')),
-	status VARCHAR(10) NOT NULL,
+	status VARCHAR(12) NOT NULL CHECK(status IN ('asignada', 'en camino', 'por retirar', 'entregada')),
 	fechaHoraSalida TIMESTAMP NOT NULL,
 	fechaHoraLlegada TIMESTAMP,
 	idNucleoOrigen INT NOT NULL,
