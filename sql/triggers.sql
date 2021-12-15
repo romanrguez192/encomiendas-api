@@ -14,7 +14,7 @@ BEFORE UPDATE
 ON Transportadores FOR EACH ROW
 BEGIN
     CALL validarFechaIngresoTransportador(NEW.fechaIngreso);
-    IF NEW.licencia = FALSE THEN
+    IF NOT NEW.licencia THEN
         CALL validarInexistenciaVehiculos(NEW.cedula);
     END IF;
 END$$
