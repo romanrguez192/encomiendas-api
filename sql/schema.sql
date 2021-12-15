@@ -183,6 +183,7 @@ CREATE TABLE Paquetes(
 	alto DECIMAL(10,2) CHECK(alto >= 0),
 	ancho DECIMAL(10,2) CHECK(ancho >= 0),
 	profundidad DECIMAL(10,2) CHECK(profundidad >= 0),
+	fragil BOOLEAN NOT NULL,
 	idEncomienda INT NOT NULL,
 	tarifa DECIMAL(12, 2) NOT NULL,
 	PRIMARY KEY(id),
