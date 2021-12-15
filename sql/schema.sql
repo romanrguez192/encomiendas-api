@@ -29,7 +29,7 @@ CREATE TABLE Clientes(
 	email VARCHAR(64) UNIQUE NOT NULL,
 	idDireccion INT NOT NULL,
 	PRIMARY KEY(cedula),
-	FOREIGN KEY(idDireccion) REFERENCES(Direcciones)
+	FOREIGN KEY(idDireccion) REFERENCES Direcciones(id)
 	ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
@@ -52,7 +52,7 @@ CREATE TABLE Nucleos(
 	telefono VARCHAR(16) NOT NULL,
 	idDireccion INT NOT NULL,
 	PRIMARY KEY(id),
-	FOREIGN KEY(idDireccion) REFERENCES(Direcciones)
+	FOREIGN KEY(idDireccion) REFERENCES Direcciones(id)
 	ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
@@ -71,7 +71,7 @@ CREATE TABLE Transportadores(
 	idNucleo INT NOT NULL,
 	idDireccion INT NOT NULL,
 	PRIMARY KEY(cedula),
-	FOREIGN KEY(idDireccion) REFERENCES(Direcciones)
+	FOREIGN KEY(idDireccion) REFERENCES Direcciones(id)
 	ON DELETE RESTRICT ON UPDATE CASCADE,
 	FOREIGN KEY(idNucleo) REFERENCES Nucleos(id)
 	ON DELETE RESTRICT ON UPDATE CASCADE	
@@ -138,9 +138,9 @@ CREATE TABLE Vuelos(
 	CONSTRAINT fechasVueloValidas
 	CHECK(fechaHoraSalida < fechaHoraLlegada),
 	PRIMARY KEY(id),
-	FOREIGN KEY(idDireccionOrigen) REFERENCES(Direcciones)
+	FOREIGN KEY(idDireccionOrigen) REFERENCES Direcciones(id)
 	ON DELETE RESTRICT ON UPDATE CASCADE,
-	FOREIGN KEY(idDireccionDestino) REFERENCES(Direcciones)
+	FOREIGN KEY(idDireccionDestino) REFERENCES Direcciones(id)
 	ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
