@@ -24,6 +24,12 @@ BEFORE INSERT
 ON Retiros FOR EACH ROW
 BEGIN
     CALL validarCedulasRetiro(NEW.cedulaCliente, NEW.cedulaTransportador);
+
+    IF NEW.cedulaCliente IS NOT NULL THEN
+        CALL validarSaldoCliente(NEW.cedulaCliente, NEW.saldo);
+    ELSE
+        CALL validarSaldoTransportador(NEW.cedulaTransportador, NEW.saldo);
+    END IF;
 END$$
 
 CREATE TRIGGER TriggerRetirosUpdate
@@ -31,6 +37,12 @@ BEFORE UPDATE
 ON Retiros FOR EACH ROW
 BEGIN
     CALL validarCedulasRetiro(NEW.cedulaCliente, NEW.cedulaTransportador);
+
+    IF NEW.cedulaCliente IS NOT NULL THEN
+        CALL validarSaldoCliente(NEW.cedulaCliente, NEW.saldo);
+    ELSE
+        CALL validarSaldoTransportador(NEW.cedulaTransportador, NEW.saldo);
+    END IF;
 END$$
 
 CREATE TRIGGER TriggerEncomiendasInsert

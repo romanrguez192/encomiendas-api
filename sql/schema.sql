@@ -97,6 +97,7 @@ CREATE TABLE Cursos(
 	id INT NOT NULL AUTO_INCREMENT,
 	nombre VARCHAR(50) NOT NULL,
 	lugar VARCHAR(100) NOT NULL,
+	fecha DATE NOT NULL,
 	PRIMARY KEY(id)
 );
 
@@ -158,8 +159,17 @@ CREATE TABLE Encomiendas(
 	cedulaTransportador VARCHAR(16) NOT NULL,
 	idVuelo INT,
 	precio DECIMAL(12, 2),
+	comisionTransportador DECIMAL(12, 2),
 	CONSTRAINT fechasEncomiendaValidas
 	CHECK(fechaHoraSalida < fechaHoraLlegada),
+	CONSTRAINT fechaHoraLlegadaValida
+	CHECK(
+		-- Si la encomienda no está por retirar ni entregada, entonces la fecha de llegada es nula
+		(status IN ('por retirar', 'entregada') OR fechaHoraLlegada IS NULL)
+		AND
+		-- Y si la encomienda está por retirar o entregada, entonces la fecha de llegada no es nula
+		(status NOT IN ('por retirar', 'entregada') OR fechaHoraLlegada IS NOT NULL)
+	),
 	PRIMARY KEY(id),
 	FOREIGN KEY (cedulaEmisor) REFERENCES Clientes(cedula)
 	ON DELETE RESTRICT ON UPDATE CASCADE,
