@@ -59,7 +59,7 @@ BEGIN
 	FROM Recargas
 	WHERE cedulaCliente = cedula;
 
-	SELECT SUM(retiros)
+	SELECT SUM(saldo)
 	INTO sumaRetiros
 	FROM Retiros
 	WHERE cedulaCliente = cedula;
@@ -81,9 +81,10 @@ BEGIN
 	SELECT SUM(comisionTransportador)
 	INTO sumaComisiones
 	FROM Encomiendas
-	WHERE cedulaTransportador = cedula;
+	WHERE cedulaTransportador = cedula
+	AND status IN ('por retirar', 'entregada');
 
-	SELECT SUM(retiros)
+	SELECT SUM(saldo)
 	INTO sumaRetiros
 	FROM Retiros
 	WHERE cedulaTransportador = cedula;	
@@ -105,7 +106,6 @@ BEGIN
 	RETURN cantidad;
 END$$
 
--- TODO: Función para calcular lo que le corresponde al transportador por una encomienda
 CREATE FUNCTION calcularComisionTransportador(precio DECIMAL(12, 2))
 RETURNS DECIMAL(12, 2)
 BEGIN
