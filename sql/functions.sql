@@ -1,24 +1,21 @@
 DELIMITER $$
 
-CREATE FUNCTION calcularTarifa(id INT)
+CREATE FUNCTION calcularTarifa(
+	alto INT,
+	ancho INT,
+	profundidad INT,
+	peso INT,
+	empaquetado BOOLEAN,
+	fragil BOOLEAN
+)
 RETURNS DECIMAL(12, 2)
+DETERMINISTIC
 BEGIN
 	DECLARE precioBase DECIMAL(10, 2) DEFAULT 5;
 	DECLARE precioFragil DECIMAL(10, 2) DEFAULT 7;
 	DECLARE precioVolumen DECIMAL(10, 2) DEFAULT 10;
 	DECLARE precioPeso DECIMAL(10, 2) DEFAULT 2.5;
 	DECLARE tarifa DECIMAL(12, 2) DEFAULT 0;
-	DECLARE alto INT;
-	DECLARE ancho INT;
-	DECLARE profundidad INT;
-	DECLARE peso INT;
-	DECLARE empaquetado BOOLEAN;
-	DECLARE fragil BOOLEAN;
-
-	SELECT p.peso, p.alto, p.ancho, p.profundidad, p.empaquetado, p.fragil 	
-	INTO peso, alto, ancho, profundidad, empaquetado, fragil
-	FROM Paquetes p 
-	WHERE p.id = id;
 
 	IF empaquetado THEN
 		SET tarifa = precioVolumen * (alto * ancho * profundidad) + precioPeso * peso + precioBase;
@@ -108,6 +105,7 @@ END$$
 
 CREATE FUNCTION calcularComisionTransportador(precio DECIMAL(12, 2))
 RETURNS DECIMAL(12, 2)
+DETERMINISTIC
 BEGIN
 	RETURN 0.2 * precio;
 END$$
@@ -131,6 +129,7 @@ CREATE FUNCTION calcularFechaHoraSalidaReal(
 	duracionVuelo INT
 )
 RETURNS TIMESTAMP
+DETERMINISTIC
 BEGIN
 	-- Si el vuelo no se ha completado, no se conoce la fecha y hora real
 	IF duracionVuelo IS NULL THEN
@@ -148,6 +147,7 @@ CREATE FUNCTION calcularFechaHoraLlegadaReal(
 	duracionVuelo INT
 )
 RETURNS TIMESTAMP
+DETERMINISTIC
 BEGIN
 	SET duracionRetraso = IFNULL(duracionRetraso, 0);
 
