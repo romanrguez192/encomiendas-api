@@ -97,15 +97,15 @@ END$$
 
 CREATE PROCEDURE validarSaldoCliente(cedula VARCHAR(16), saldo DECIMAL(12, 2))
 BEGIN
-	IF calcularSaldoCliente(cedula) - saldo THEN
-		SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'No se puede efecutar la operación, el cliente no tiene saldo suficiente';
+	IF calcularSaldoCliente(cedula) - saldo < 0 THEN
+		SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'No se puede efectuar la operación, el cliente no tiene saldo suficiente';
 	END IF;
 END$$
 
 CREATE PROCEDURE validarSaldoTransportador(cedula VARCHAR(16), saldo DECIMAL(12, 2))
 BEGIN
-	IF calcularSaldoTransportador(cedula) - saldo THEN
-		SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'No se puede efecutar la operación, el transportador no tiene saldo suficiente';
+	IF calcularSaldoTransportador(cedula) - saldo < 0 THEN
+		SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'No se puede efectuar la operación, el transportador no tiene saldo suficiente';
 	END IF;
 END$$
 

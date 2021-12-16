@@ -112,4 +112,46 @@ BEGIN
 	RETURN 0.2 * precio;
 END$$
 
+CREATE FUNCTION calcularNumeroArticulo(idPaquete)
+RETURNS INT
+BEGIN
+	DECLARE numeroActual INT;
+
+	SELECT COUNT(*)
+	INTO numeroActual
+	FROM Articulos AS a
+	WHERE a.idPaquete = idPaquete;
+
+	RETURN numeroActual + 1;
+END$$
+
+CREATE FUNCTION calcularFechaHoraSalidaReal(
+	fechaHoraSalidaEstimada TIMESTAMP,
+	duracionRetraso INT,
+	duracionVuelo INT
+)
+RETURNS TIMESTAMP
+BEGIN
+	-- Si el vuelo no se ha completado, no se conoce la fecha y hora real
+	IF duracionVuelo IS NULL THEN
+		RETURN NULL;
+	END IF;
+
+	SET duracionRetraso = IFNULL(duracionRetraso, 0);
+
+	RETURN fechaHoraSalidaEstimada + INTERVAL duracionRetraso MINUTE;
+END$$
+
+CREATE FUNCTION calcularFechaHoraLlegadaReal(
+	fechaHoraSalidaEstimada TIMESTAMP,
+	duracionRetraso INT,
+	duracionVuelo INT
+)
+RETURNS TIMESTAMP
+BEGIN
+	SET duracionRetraso = IFNULL(duracionRetraso, 0);
+
+	RETURN fechaHoraSalidaEstimada + INTERVAL duracionRetraso MINUTE + INTERVAL duracionVuelo MINUTE;
+END$$
+
 DELIMITER ;

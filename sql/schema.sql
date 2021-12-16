@@ -127,17 +127,18 @@ CREATE TABLE Vuelos(
 	id INT NOT NULL AUTO_INCREMENT,
 	-- Duración del vuelo en minutos
 	duracionVuelo INT CHECK(duracionVuelo > 0),
-	fechaHoraSalida TIMESTAMP NOT NULL,
-	fechaHoraLlegada TIMESTAMP,
+	fechaHoraSalidaEstimada TIMESTAMP NOT NULL DEFAULT 0,
+	fechaHoraLlegadaEstimada TIMESTAMP NOT NULL DEFAULT 0,
 	idDireccionOrigen INT NOT NULL,
 	idDireccionDestino INT NOT NULL,
 	descripcionRetraso VARCHAR(255),
+	-- Duración del retraso en minutos
 	duracionRetraso INTEGER,
 	-- Si hubo retraso, ambos campos son NOT NULL, de lo contrario ambos son NULL
 	CONSTRAINT retrasoValido
 	CHECK(NOT(descripcionRetraso IS NULL XOR duracionRetraso IS NULL)),
 	CONSTRAINT fechasVueloValidas
-	CHECK(fechaHoraSalida < fechaHoraLlegada),
+	CHECK(fechaHoraSalidaEstimada < fechaHoraLlegadaEstimada),
 	PRIMARY KEY(id),
 	FOREIGN KEY(idDireccionOrigen) REFERENCES Direcciones(id)
 	ON DELETE RESTRICT ON UPDATE CASCADE,
@@ -152,8 +153,8 @@ CREATE TABLE Encomiendas(
 	cedulaReceptor VARCHAR(16) NOT NULL,
 	tipo VARCHAR(10) NOT NULL CHECK(tipo IN ('terrestre', 'aerea')),
 	status VARCHAR(12) NOT NULL CHECK(status IN ('asignada', 'en camino', 'por retirar', 'entregada')),
-	fechaHoraSalida TIMESTAMP NOT NULL,
-	fechaHoraLlegada TIMESTAMP,
+	fechaHoraSalida TIMESTAMP NOT NULL DEFAULT 0,
+	fechaHoraLlegada TIMESTAMP NULL,
 	idNucleoOrigen INT NOT NULL,
 	idNucleoDestino INT NOT NULL,
 	cedulaTransportador VARCHAR(16) NOT NULL,

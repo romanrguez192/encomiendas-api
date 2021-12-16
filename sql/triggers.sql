@@ -85,4 +85,12 @@ BEGIN
     END IF;
 END$$
 
+CREATE TRIGGER TriggerArticulosInsert
+BEFORE INSERT
+ON Articulos FOR EACH ROW
+BEGIN
+    SET NEW.numero = calcularNumeroArticulo(NEW.idPaquete);
+END$$
+
+
 DELIMITER ;
