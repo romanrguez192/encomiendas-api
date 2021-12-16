@@ -7,7 +7,7 @@
 -- Para emails: VARCHAR(64)
 -- Para montos: DECIMAL(12, 2) CHECK(VALUE >= 0)
 -- Para saldos: DECIMAL(12, 2) CHECK(VALUE >= 0)
--- Para dimensiones, peso: DECIMAL(10, 2) CHECK(VALUE >= 0)
+-- Para dimensiones (cm), peso (g): INT CHECK(VALUE >= 0)
 
  -- Tabla de Direcciones
  CREATE TABLE Direcciones(
@@ -179,13 +179,21 @@ CREATE TABLE Encomiendas(
 CREATE TABLE Paquetes(
 	id INT NOT NULL AUTO_INCREMENT,
 	empaquetado BOOLEAN NOT NULL,
-	peso DECIMAL(10,2) NOT NULL CHECK(peso >= 0),
-	alto DECIMAL(10,2) CHECK(alto >= 0),
-	ancho DECIMAL(10,2) CHECK(ancho >= 0),
-	profundidad DECIMAL(10,2) CHECK(profundidad >= 0),
+	-- Peso en gramos
+	peso INT NOT NULL CHECK(peso >= 0),
+	-- Dimensiones en centímetros
+	alto INT CHECK(alto >= 0),
+	ancho INT CHECK(ancho >= 0),
+	profundidad INT CHECK(profundidad >= 0),
 	fragil BOOLEAN NOT NULL,
 	idEncomienda INT NOT NULL,
 	tarifa DECIMAL(12, 2) NOT NULL,
+	CONSTRAINT empaquetadoValido
+	CHECK(
+		(empaquetado OR (alto IS NULL AND ancho IS NULL AND profundidad IS NULL))
+		AND
+		(NOT empaquetado OR (alto IS NOT NULL AND ancho IS NOT NULL AND profundidad IS NOT NULL))
+	),
 	PRIMARY KEY(id),
 	FOREIGN KEY(idEncomienda) REFERENCES Encomiendas(id)
 	ON DELETE RESTRICT ON UPDATE CASCADE
