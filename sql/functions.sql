@@ -11,11 +11,11 @@ CREATE FUNCTION calcularTarifa(
 RETURNS DECIMAL(12, 2)
 DETERMINISTIC
 BEGIN
-	DECLARE precioBase DECIMAL(10, 2) DEFAULT 5;
-	DECLARE precioFragil DECIMAL(10, 2) DEFAULT 7;
-	DECLARE precioVolumen DECIMAL(10, 2) DEFAULT 10;
-	DECLARE precioPeso DECIMAL(10, 2) DEFAULT 2.5;
-	DECLARE tarifa DECIMAL(12, 2) DEFAULT 0;
+	DECLARE precioBase DECIMAL(10, 2) DEFAULT 20;
+	DECLARE precioFragil DECIMAL(10, 2) DEFAULT 1.1;
+	DECLARE precioVolumen DECIMAL(10, 2) DEFAULT 0.02;
+	DECLARE precioPeso DECIMAL(10, 2) DEFAULT 0.01;
+	DECLARE tarifa DECIMAL(12, 2);
 
 	IF empaquetado THEN
 		SET tarifa = precioVolumen * (alto * ancho * profundidad) + precioPeso * peso + precioBase;
@@ -24,7 +24,7 @@ BEGIN
 	END IF;
 
 	IF fragil THEN
-		SET tarifa = tarifa + precioFragil;
+		SET tarifa = tarifa * precioFragil;
 	END IF;
 
 	RETURN tarifa;
@@ -33,8 +33,8 @@ END$$
 CREATE FUNCTION calcularPrecio(id INT)
 RETURNS DECIMAL(12, 2)
 BEGIN
-	DECLARE precioBase INT DEFAULT 10;
-	DECLARE precio INT;
+	DECLARE precioBase DECIMAL(12, 2) DEFAULT 20;
+	DECLARE precio DECIMAL(12, 2);
 
 	SELECT SUM(tarifa)
 	INTO precio
