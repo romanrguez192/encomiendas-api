@@ -51,17 +51,17 @@ BEGIN
 	DECLARE sumaRetiros DECIMAL(12, 2);
 	DECLARE sumaEncomiendas DECIMAL(12, 2);
 
-	SELECT SUM(saldo)
+	SELECT IFNULL(SUM(saldo), 0)
 	INTO sumaRecargas
 	FROM Recargas
 	WHERE cedulaCliente = cedula;
 
-	SELECT SUM(saldo)
+	SELECT IFNULL(SUM(saldo), 0)
 	INTO sumaRetiros
 	FROM Retiros
 	WHERE cedulaCliente = cedula;
 
-	SELECT SUM(precio)
+	SELECT IFNULL(SUM(precio), 0)
 	INTO sumaEncomiendas
 	FROM Encomiendas
 	WHERE cedulaEmisor = cedula;
@@ -75,13 +75,13 @@ BEGIN
 	DECLARE sumaComisiones DECIMAL(12, 2);
 	DECLARE sumaRetiros DECIMAL(12, 2);
 
-	SELECT SUM(comisionTransportador)
+	SELECT IFNULL(SUM(comisionTransportador), 0)
 	INTO sumaComisiones
 	FROM Encomiendas
 	WHERE cedulaTransportador = cedula
 	AND status IN ('por retirar', 'entregada');
 
-	SELECT SUM(saldo)
+	SELECT IFNULL(SUM(saldo), 0)
 	INTO sumaRetiros
 	FROM Retiros
 	WHERE cedulaTransportador = cedula;	

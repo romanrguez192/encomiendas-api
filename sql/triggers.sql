@@ -1,15 +1,13 @@
--- TODO: Definir nomenclatura para los triggers
-
 DELIMITER $$
 
-CREATE TRIGGER TriggerTransportadoresInsert
+CREATE TRIGGER TriggerTransportadoresBeforeInsert
 BEFORE INSERT
 ON Transportadores FOR EACH ROW
 BEGIN
     CALL validarFechaIngresoTransportador(NEW.fechaIngreso);
 END$$
 
-CREATE TRIGGER TriggerTransportadoresUpdate
+CREATE TRIGGER TriggerTransportadoresBeforeUpdate
 BEFORE UPDATE
 ON Transportadores FOR EACH ROW
 BEGIN
@@ -19,7 +17,7 @@ BEGIN
     END IF;
 END$$
 
-CREATE TRIGGER TriggerRetirosInsert
+CREATE TRIGGER TriggerRetirosBeforeInsert
 BEFORE INSERT
 ON Retiros FOR EACH ROW
 BEGIN
@@ -32,7 +30,7 @@ BEGIN
     END IF;
 END$$
 
-CREATE TRIGGER TriggerRetirosUpdate
+CREATE TRIGGER TriggerRetirosBeforeUpdate
 BEFORE UPDATE
 ON Retiros FOR EACH ROW
 BEGIN
@@ -45,7 +43,7 @@ BEGIN
     END IF;
 END$$
 
-CREATE TRIGGER TriggerEncomiendasInsert
+CREATE TRIGGER TriggerEncomiendasBeforeInsert
 BEFORE INSERT
 ON Encomiendas FOR EACH ROW
 BEGIN
@@ -54,9 +52,10 @@ BEGIN
     CALL validarNucleosEncomienda(NEW.idNucleoOrigen, NEW.idNucleoDestino);
     CALL validarDisponibilidadTransportador(NEW.cedulaTransportador);
     CALL validarCapacitacionTransportador(NEW.cedulaTransportador);
+    SET NEW.comisionTransportador = calcularComisionTransportador(NEW.precio);
 END$$
 
-CREATE TRIGGER TriggerEncomiendasUpdate
+CREATE TRIGGER TriggerEncomiendasBeforeUpdate
 BEFORE UPDATE
 ON Encomiendas FOR EACH ROW
 BEGIN
@@ -65,9 +64,10 @@ BEGIN
     CALL validarNucleosEncomienda(NEW.idNucleoOrigen, NEW.idNucleoDestino);
     CALL validarDisponibilidadTransportador(NEW.cedulaTransportador);
     CALL validarCapacitacionTransportador(NEW.cedulaTransportador);
+    SET NEW.comisionTransportador = calcularComisionTransportador(NEW.precio);
 END$$
 
-CREATE TRIGGER TriggerVehiculosInsert
+CREATE TRIGGER TriggerVehiculosBeforeInsert
 BEFORE INSERT
 ON Vehiculos FOR EACH ROW
 BEGIN
@@ -76,7 +76,7 @@ BEGIN
     END IF;
 END$$
 
-CREATE TRIGGER TriggerVehiculosUpdate
+CREATE TRIGGER TriggerVehiculosBeforeUpdate
 BEFORE UPDATE
 ON Vehiculos FOR EACH ROW
 BEGIN
@@ -85,12 +85,46 @@ BEGIN
     END IF;
 END$$
 
-CREATE TRIGGER TriggerArticulosInsert
+CREATE TRIGGER TriggerArticulosBeforeInsert
 BEFORE INSERT
 ON Articulos FOR EACH ROW
 BEGIN
     SET NEW.numero = calcularNumeroArticulo(NEW.idPaquete);
 END$$
 
+CREATE TRIGGER TriggerPaquetesBeforeInsert
+BEFORE INSERT
+ON Paquetes FOR EACH ROW
+BEGIN
+    SET NEW.tarifa = calcularTarifa(NEW.alto, NEW.ancho, NEW.profundidad, NEW.peso, NEW.empaquetado, NEW.fragil);
+END$$
+
+CREATE TRIGGER TriggerPaquetesAfterInsert
+AFTER INSERT
+ON Paquetes FOR EACH ROW
+BEGIN
+    CALL actualizarPrecio(NEW.idEncomienda);
+END$$
+
+CREATE TRIGGER TriggerPaquetesBeforeUpdate
+BEFORE UPDATE
+ON Paquetes FOR EACH ROW
+BEGIN
+    SET NEW.tarifa = calcularTarifa(NEW.alto, NEW.ancho, NEW.profundidad, NEW.peso, NEW.empaquetado, NEW.fragil);
+END$$
+
+CREATE TRIGGER TriggerPaquetesAfterUpdate
+AFTER UPDATE
+ON Paquetes FOR EACH ROW
+BEGIN
+    CALL actualizarPrecio(NEW.idEncomienda);
+END$$
+
+CREATE TRIGGER TriggerPaquetesAfterDelete
+AFTER DELETE
+ON Paquetes FOR EACH ROW
+BEGIN
+    CALL actualizarPrecio(OLD.idEncomienda);
+END$$
 
 DELIMITER ;

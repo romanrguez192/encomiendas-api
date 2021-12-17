@@ -109,4 +109,11 @@ BEGIN
 	END IF;
 END$$
 
+CREATE PROCEDURE actualizarPrecio(idEncomienda INT)
+BEGIN
+	UPDATE Encomiendas
+    SET precio = calcularPrecio(idEncomienda)
+    WHERE id = idEncomienda;
+END$$
+
 DELIMITER ;
