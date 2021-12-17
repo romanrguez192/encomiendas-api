@@ -110,19 +110,6 @@ BEGIN
 	RETURN 0.2 * precio;
 END$$
 
-CREATE FUNCTION calcularNumeroArticulo(idPaquete)
-RETURNS INT
-BEGIN
-	DECLARE numeroActual INT;
-
-	SELECT COUNT(*)
-	INTO numeroActual
-	FROM Articulos AS a
-	WHERE a.idPaquete = idPaquete;
-
-	RETURN numeroActual + 1;
-END$$
-
 CREATE FUNCTION calcularFechaHoraSalidaReal(
 	fechaHoraSalidaEstimada TIMESTAMP,
 	duracionRetraso INT,

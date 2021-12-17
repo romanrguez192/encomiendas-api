@@ -39,9 +39,9 @@ BEGIN
     CALL validarCedulasRetiro(NEW.cedulaCliente, NEW.cedulaTransportador);
 
     IF NEW.cedulaCliente IS NOT NULL THEN
-        CALL validarSaldoCliente(NEW.cedulaCliente, NEW.saldo);
+        CALL validarSaldoCliente(NEW.cedulaCliente, OLD.saldo - NEW.saldo);
     ELSE
-        CALL validarSaldoTransportador(NEW.cedulaTransportador, NEW.saldo);
+        CALL validarSaldoTransportador(NEW.cedulaTransportador, OLD.saldo - NEW.saldo);
     END IF;
 
     SET NEW.saldo = convertirPrecio(NEW.precio);
@@ -101,13 +101,6 @@ BEGIN
     IF NEW.tipo = 'motor' THEN
         CALL validarLicenciaTransportador(NEW.cedulaTransportador);
     END IF;
-END$$
-
-CREATE TRIGGER TriggerArticulosBeforeInsert
-BEFORE INSERT
-ON Articulos FOR EACH ROW
-BEGIN
-    SET NEW.numero = calcularNumeroArticulo(NEW.idPaquete);
 END$$
 
 CREATE TRIGGER TriggerPaquetesBeforeInsert
