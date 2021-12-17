@@ -154,4 +154,11 @@ BEGIN
 	RETURN fechaHoraSalidaEstimada + INTERVAL duracionRetraso MINUTE + INTERVAL duracionVuelo MINUTE;
 END$$
 
+CREATE FUNCTION convertirPrecio(precio DECIMAL(12, 2))
+RETURNS DECIMAL(12, 2)
+DETERMINISTIC
+BEGIN
+	RETURN 4 * precio;
+END$$
+
 DELIMITER ;

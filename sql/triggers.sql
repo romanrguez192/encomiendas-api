@@ -28,6 +28,8 @@ BEGIN
     ELSE
         CALL validarSaldoTransportador(NEW.cedulaTransportador, NEW.saldo);
     END IF;
+
+    SET NEW.saldo = convertirPrecio(NEW.precio);
 END$$
 
 CREATE TRIGGER TriggerRetirosBeforeUpdate
@@ -41,6 +43,22 @@ BEGIN
     ELSE
         CALL validarSaldoTransportador(NEW.cedulaTransportador, NEW.saldo);
     END IF;
+
+    SET NEW.saldo = convertirPrecio(NEW.precio);
+END$$
+
+CREATE TRIGGER TriggerRecargasBeforeInsert
+BEFORE INSERT
+ON Recargas FOR EACH ROW
+BEGIN
+    SET NEW.saldo = convertirPrecio(NEW.precio);
+END$$
+
+CREATE TRIGGER TriggerRecargasBeforeUpdate
+BEFORE UPDATE
+ON Recargas FOR EACH ROW
+BEGIN
+    SET NEW.saldo = convertirPrecio(NEW.precio);
 END$$
 
 CREATE TRIGGER TriggerEncomiendasBeforeInsert
