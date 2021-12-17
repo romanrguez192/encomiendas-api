@@ -222,7 +222,7 @@ CREATE TABLE Articulos(
 );
 
 -- Tabla de Cursos Realizados por los transportadores 
- CREATE TABLE CursosRealizados(
+CREATE TABLE CursosRealizados(
 	cedulaTransportador VARCHAR(16) NOT NULL,
 	idCurso INT NOT NULL,
 	PRIMARY KEY(cedulaTransportador, idCurso),
@@ -230,5 +230,5 @@ CREATE TABLE Articulos(
 	ON DELETE CASCADE ON UPDATE CASCADE,
 	FOREIGN KEY(idCurso) REFERENCES Cursos(id)
 	ON DELETE CASCADE ON UPDATE CASCADE	
- );
+);
  

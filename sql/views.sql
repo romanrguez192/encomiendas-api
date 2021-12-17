@@ -1,5 +1,3 @@
--- TODO: Agregar el saldo en la vista de clientes
-
 -- Vista de clientes
 CREATE VIEW VistaClientes AS 
 SELECT c.*, d.parroquia, d.ciudad, d.estado, d.pais, calcularSaldoCliente(c.cedula) AS saldo
