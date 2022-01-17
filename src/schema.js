@@ -1,6 +1,9 @@
 const { gql } = require("apollo-server-express");
+const { DateResolver } = require("graphql-scalars");
 
 const typeDefs = gql`
+  scalar Date
+
   type Query {
     clientes: [Cliente]!
     cliente(cedula: String!): Cliente
@@ -8,6 +11,8 @@ const typeDefs = gql`
     direccion(id: Int!): Direccion
     nucleos: [Nucleo]!
     nucleo(id: Int!): Nucleo
+    transportadores: [Transportador]!
+    transportador(cedula: String!): Transportador
   }
 
   type Cliente {
@@ -28,6 +33,7 @@ const typeDefs = gql`
     parroquia: String!
     clientes: [Cliente]!
     nucleos: [Nucleo]!
+    transportadores: [Transportador]!
   }
 
   type Nucleo {
@@ -35,10 +41,27 @@ const typeDefs = gql`
     nombre: String!
     telefono: String!
     direccion: Direccion
+    transportadores: [Transportador]!
+  }
+
+  type Transportador {
+    cedula: String!
+    nombre: String!
+    apellido: String!
+    telefono: String!
+    telefonoAlternativo: String
+    email: String!
+    fechaIngreso: Date!
+    disponible: Boolean!
+    antecedentesPenales: Boolean!
+    licencia: Boolean!
+    nucleo: Nucleo!
+    direccion: Direccion!
   }
 `;
 
 const resolvers = {
+  Date: DateResolver,
   Query: {
     clientes: (_parent, _args, context) => {
       return context.prisma.cliente.findMany();
@@ -70,6 +93,16 @@ const resolvers = {
         },
       });
     },
+    transportadores: (_parent, _args, context) => {
+      return context.prisma.transportador.findMany();
+    },
+    transportador: (_parent, args, context) => {
+      return context.prisma.transportador.findUnique({
+        where: {
+          cedula: args.cedula,
+        },
+      });
+    },
   },
   Cliente: {
     direccion: (parent, _args, context) => {
@@ -92,6 +125,45 @@ const resolvers = {
       return context.prisma.nucleo.findMany({
         where: {
           idDireccion: parent.id,
+        },
+      });
+    },
+    transportadores: (parent, _args, context) => {
+      return context.prisma.transportador.findMany({
+        where: {
+          idDireccion: parent.id,
+        },
+      });
+    },
+  },
+  Nucleo: {
+    direccion: (parent, _args, context) => {
+      return context.prisma.direccion.findUnique({
+        where: {
+          id: parent.idDireccion,
+        },
+      });
+    },
+    transportadores: (parent, _args, context) => {
+      return context.prisma.transportador.findMany({
+        where: {
+          idNucleo: parent.id,
+        },
+      });
+    },
+  },
+  Transportador: {
+    nucleo: (parent, _args, context) => {
+      return context.prisma.nucleo.findUnique({
+        where: {
+          id: parent.idNucleo,
+        },
+      });
+    },
+    direccion: (parent, _args, context) => {
+      return context.prisma.direccion.findUnique({
+        where: {
+          id: parent.idDireccion,
         },
       });
     },

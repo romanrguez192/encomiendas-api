@@ -32,7 +32,8 @@
     "apollo-server-core": "^3.6.1",
     "apollo-server-express": "^3.6.1",
     "express": "^4.17.2",
-    "graphql": "^16.2.0"
+    "graphql": "^16.2.0",
+    "graphql-scalars": "^1.14.1"
   },
   "lint-staged": {
     "*.js": "eslint --cache --fix",
