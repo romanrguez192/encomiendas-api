@@ -20,6 +20,8 @@ const typeDefs = gql`
     recarga(id: Int!): Recarga
     retiros: [Retiro]!
     retiro(id: Int!): Retiro
+    cursos: [Curso]!
+    curso(id: Int!): Curso
   }
 
   type Cliente {
@@ -68,6 +70,7 @@ const typeDefs = gql`
     direccion: Direccion!
     vehiculos: [Vehiculo]!
     retiros: [Retiro]!
+    cursos: [Curso]!
   }
 
   type Vehiculo {
@@ -95,6 +98,14 @@ const typeDefs = gql`
     fecha: Date!
     cliente: Cliente
     transportador: Transportador
+  }
+
+  type Curso {
+    id: Int!
+    nombre: String!
+    lugar: String!
+    fecha: Date!
+    transportadores: [Transportador]!
   }
 `;
 
@@ -167,6 +178,16 @@ const resolvers = {
     },
     retiro: (_parent, args, context) => {
       return context.prisma.retiro.findUnique({
+        where: {
+          id: args.id,
+        },
+      });
+    },
+    cursos: (_parent, _args, context) => {
+      return context.prisma.curso.findMany();
+    },
+    curso: (_parent, args, context) => {
+      return context.prisma.curso.findUnique({
         where: {
           id: args.id,
         },
@@ -264,6 +285,19 @@ const resolvers = {
         },
       });
     },
+    cursos: (parent, _args, context) => {
+      return context.prisma.curso.findMany({
+        where: {
+          transportadores: {
+            some: {
+              transportador: {
+                cedula: parent.cedula,
+              },
+            },
+          },
+        },
+      });
+    },
   },
   Vehiculo: {
     transportador: (parent, _args, context) => {
@@ -295,6 +329,21 @@ const resolvers = {
       return context.prisma.transportador.findUnique({
         where: {
           cedula: parent.cedulaTransportador || "",
+        },
+      });
+    },
+  },
+  Curso: {
+    transportadores: (parent, _args, context) => {
+      return context.prisma.transportador.findMany({
+        where: {
+          cursos: {
+            some: {
+              curso: {
+                id: parent.id,
+              },
+            },
+          },
         },
       });
     },

@@ -37,11 +37,11 @@ model Cliente {
 }
 
 model Curso {
-  id               Int                @id @default(autoincrement())
-  nombre           String             @db.VarChar(50)
-  lugar            String             @db.VarChar(100)
-  fecha            DateTime           @db.Date
-  CursosRealizados CursosRealizados[]
+  id              Int                @id @default(autoincrement())
+  nombre          String             @db.VarChar(50)
+  lugar           String             @db.VarChar(100)
+  fecha           DateTime           @db.Date
+  transportadores CursosRealizados[]
 
   @@map("Cursos")
 }
@@ -49,8 +49,8 @@ model Curso {
 model CursosRealizados {
   cedulaTransportador String        @db.VarChar(16)
   idCurso             Int
-  Transportadores     Transportador @relation(fields: [cedulaTransportador], references: [cedula], onDelete: Cascade, map: "CursosRealizados_ibfk_1")
-  Cursos              Curso         @relation(fields: [idCurso], references: [id], onDelete: Cascade, map: "CursosRealizados_ibfk_2")
+  transportador       Transportador @relation(fields: [cedulaTransportador], references: [cedula], onDelete: Cascade, map: "CursosRealizados_ibfk_1")
+  curso               Curso         @relation(fields: [idCurso], references: [id], onDelete: Cascade, map: "CursosRealizados_ibfk_2")
 
   @@id([cedulaTransportador, idCurso])
   @@index([idCurso], map: "idCurso")
