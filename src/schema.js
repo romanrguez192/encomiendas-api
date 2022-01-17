@@ -18,6 +18,8 @@ const typeDefs = gql`
     vehiculo(id: Int!): Vehiculo
     recargas: [Recarga]!
     recarga(id: Int!): Recarga
+    retiros: [Retiro]!
+    retiro(id: Int!): Retiro
   }
 
   type Cliente {
@@ -29,6 +31,7 @@ const typeDefs = gql`
     email: String!
     direccion: Direccion
     recargas: [Recarga]!
+    retiros: [Retiro]!
   }
 
   type Direccion {
@@ -64,6 +67,7 @@ const typeDefs = gql`
     nucleo: Nucleo!
     direccion: Direccion!
     vehiculos: [Vehiculo]!
+    retiros: [Retiro]!
   }
 
   type Vehiculo {
@@ -80,8 +84,17 @@ const typeDefs = gql`
     id: Int!
     precio: Float!
     saldo: Float!
-    fecha: DateTime!
+    fecha: Date!
     cliente: Cliente!
+  }
+
+  type Retiro {
+    id: Int!
+    precio: Float!
+    saldo: Float!
+    fecha: Date!
+    cliente: Cliente
+    transportador: Transportador
   }
 `;
 
@@ -149,6 +162,16 @@ const resolvers = {
         },
       });
     },
+    retiros: (_parent, _args, context) => {
+      return context.prisma.retiro.findMany();
+    },
+    retiro: (_parent, args, context) => {
+      return context.prisma.retiro.findUnique({
+        where: {
+          id: args.id,
+        },
+      });
+    },
   },
   Cliente: {
     direccion: (parent, _args, context) => {
@@ -160,6 +183,13 @@ const resolvers = {
     },
     recargas: (parent, _args, context) => {
       return context.prisma.recarga.findMany({
+        where: {
+          cedulaCliente: parent.cedula,
+        },
+      });
+    },
+    retiros: (parent, _args, context) => {
+      return context.prisma.retiro.findMany({
         where: {
           cedulaCliente: parent.cedula,
         },
@@ -227,6 +257,13 @@ const resolvers = {
         },
       });
     },
+    retiros: (parent, _args, context) => {
+      return context.prisma.retiro.findMany({
+        where: {
+          cedulaTransportador: parent.cedula,
+        },
+      });
+    },
   },
   Vehiculo: {
     transportador: (parent, _args, context) => {
@@ -242,6 +279,22 @@ const resolvers = {
       return context.prisma.cliente.findUnique({
         where: {
           cedula: parent.cedulaCliente,
+        },
+      });
+    },
+  },
+  Retiro: {
+    cliente: (parent, _args, context) => {
+      return context.prisma.cliente.findUnique({
+        where: {
+          cedula: parent.cedulaCliente || "",
+        },
+      });
+    },
+    transportador: (parent, _args, context) => {
+      return context.prisma.transportador.findUnique({
+        where: {
+          cedula: parent.cedulaTransportador || "",
         },
       });
     },
