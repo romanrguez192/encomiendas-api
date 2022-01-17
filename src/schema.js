@@ -13,6 +13,8 @@ const typeDefs = gql`
     nucleo(id: Int!): Nucleo
     transportadores: [Transportador]!
     transportador(cedula: String!): Transportador
+    vehiculos: [Vehiculo]!
+    vehiculo(id: Int!): Vehiculo
   }
 
   type Cliente {
@@ -57,6 +59,17 @@ const typeDefs = gql`
     licencia: Boolean!
     nucleo: Nucleo!
     direccion: Direccion!
+    vehiculos: [Vehiculo]!
+  }
+
+  type Vehiculo {
+    id: Int!
+    color: String!
+    tipo: String!
+    marca: String
+    modelo: String
+    placa: String
+    transportador: Transportador!
   }
 `;
 
@@ -100,6 +113,16 @@ const resolvers = {
       return context.prisma.transportador.findUnique({
         where: {
           cedula: args.cedula,
+        },
+      });
+    },
+    vehiculos: (_parent, _args, context) => {
+      return context.prisma.vehiculo.findMany();
+    },
+    vehiculo: (_parent, args, context) => {
+      return context.prisma.vehiculo.findUnique({
+        where: {
+          id: args.id,
         },
       });
     },
@@ -164,6 +187,22 @@ const resolvers = {
       return context.prisma.direccion.findUnique({
         where: {
           id: parent.idDireccion,
+        },
+      });
+    },
+    vehiculos: (parent, _args, context) => {
+      return context.prisma.vehiculo.findMany({
+        where: {
+          cedulaTransportador: parent.cedula,
+        },
+      });
+    },
+  },
+  Vehiculo: {
+    transportador: (parent, _args, context) => {
+      return context.prisma.transportador.findUnique({
+        where: {
+          cedula: parent.cedulaTransportador,
         },
       });
     },
