@@ -1,8 +1,9 @@
 const { gql } = require("apollo-server-express");
-const { DateResolver } = require("graphql-scalars");
+const { DateResolver, DateTimeResolver } = require("graphql-scalars");
 
 const typeDefs = gql`
   scalar Date
+  scalar DateTime
 
   type Query {
     clientes: [Cliente]!
@@ -15,6 +16,8 @@ const typeDefs = gql`
     transportador(cedula: String!): Transportador
     vehiculos: [Vehiculo]!
     vehiculo(id: Int!): Vehiculo
+    recargas: [Recarga]!
+    recarga(id: Int!): Recarga
   }
 
   type Cliente {
@@ -25,6 +28,7 @@ const typeDefs = gql`
     telefonoAlternativo: String
     email: String!
     direccion: Direccion
+    recargas: [Recarga]!
   }
 
   type Direccion {
@@ -71,10 +75,19 @@ const typeDefs = gql`
     placa: String
     transportador: Transportador!
   }
+
+  type Recarga {
+    id: Int!
+    precio: Float!
+    saldo: Float!
+    fecha: DateTime!
+    cliente: Cliente!
+  }
 `;
 
 const resolvers = {
   Date: DateResolver,
+  DateTime: DateTimeResolver,
   Query: {
     clientes: (_parent, _args, context) => {
       return context.prisma.cliente.findMany();
@@ -126,12 +139,29 @@ const resolvers = {
         },
       });
     },
+    recargas: (_parent, _args, context) => {
+      return context.prisma.recarga.findMany();
+    },
+    recarga: (_parent, args, context) => {
+      return context.prisma.recarga.findUnique({
+        where: {
+          id: args.id,
+        },
+      });
+    },
   },
   Cliente: {
     direccion: (parent, _args, context) => {
       return context.prisma.direccion.findUnique({
         where: {
           id: parent.idDireccion,
+        },
+      });
+    },
+    recargas: (parent, _args, context) => {
+      return context.prisma.recarga.findMany({
+        where: {
+          cedulaCliente: parent.cedula,
         },
       });
     },
@@ -203,6 +233,15 @@ const resolvers = {
       return context.prisma.transportador.findUnique({
         where: {
           cedula: parent.cedulaTransportador,
+        },
+      });
+    },
+  },
+  Recarga: {
+    cliente: (parent, _args, context) => {
+      return context.prisma.cliente.findUnique({
+        where: {
+          cedula: parent.cedulaCliente,
         },
       });
     },
