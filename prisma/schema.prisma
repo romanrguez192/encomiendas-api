@@ -1,0 +1,218 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Articulo {
+  idPaquete   Int
+  numero      Int
+  cantidad    Int
+  descripcion String   @db.VarChar(255)
+  paquetes    Paquete @relation(fields: [idPaquete], references: [id], map: "Articulos_ibfk_1")
+
+  @@id([idPaquete, numero])
+  @@map("Articulos")
+}
+
+model Cliente {
+  cedula               String        @id @db.VarChar(16)
+  nombre               String        @db.VarChar(20)
+  apellido             String        @db.VarChar(20)
+  telefono             String        @db.VarChar(16)
+  telefonoAlternativo  String?       @db.VarChar(16)
+  email                String        @unique(map: "email") @db.VarChar(64)
+  idDireccion          Int
+  direccion            Direccion   @relation(fields: [idDireccion], references: [id], map: "Clientes_ibfk_1")
+  encomiendasEnviadas  Encomienda[] @relation("ClientesToEncomiendas_cedulaEmisor")
+  encomiendasRecibidas Encomienda[] @relation("ClientesToEncomiendas_cedulaReceptor")
+  recargas             Recarga[]
+  retiros              Retiro[]
+
+  @@index([idDireccion], map: "idDireccion")
+  @@map("Clientes")
+}
+
+model Curso {
+  id               Int                @id @default(autoincrement())
+  nombre           String             @db.VarChar(50)
+  lugar            String             @db.VarChar(100)
+  fecha            DateTime           @db.Date
+  CursosRealizados CursosRealizados[]
+
+  @@map("Cursos")
+}
+
+model CursosRealizados {
+  cedulaTransportador String          @db.VarChar(16)
+  idCurso             Int
+  Transportadores     Transportador @relation(fields: [cedulaTransportador], references: [cedula], onDelete: Cascade, map: "CursosRealizados_ibfk_1")
+  Cursos              Curso          @relation(fields: [idCurso], references: [id], onDelete: Cascade, map: "CursosRealizados_ibfk_2")
+
+  @@id([cedulaTransportador, idCurso])
+  @@index([idCurso], map: "idCurso")
+}
+
+model Direccion {
+  id              Int               @id @default(autoincrement())
+  pais            String            @db.VarChar(50)
+  estado          String            @db.VarChar(50)
+  ciudad          String            @db.VarChar(50)
+  parroquia       String            @db.VarChar(50)
+  clientes        Cliente[]
+  nucleos         Nucleo[]
+  transportadores Transportador[]
+  vuelosDestino   Vuelo[]          @relation("DireccionesToVuelos_idDireccionDestino")
+  vuelosOrigen    Vuelo[]          @relation("DireccionesToVuelos_idDireccionOrigen")
+
+  @@map("Direcciones")
+}
+
+model Encomienda {
+  id                    Int             @id @default(autoincrement())
+  cedulaEmisor          String          @db.VarChar(16)
+  cedulaReceptor        String          @db.VarChar(16)
+  tipo                  String          @db.VarChar(10)
+  status                String          @db.VarChar(12)
+  fechaHoraSalida       DateTime        @default(dbgenerated("('0000-00-00 00:00:00')")) @db.Timestamp(0)
+  fechaHoraLlegada      DateTime?       @db.Timestamp(0)
+  idNucleoOrigen        Int
+  idNucleoDestino       Int
+  cedulaTransportador   String          @db.VarChar(16)
+  idVuelo               Int?
+  precio                Decimal?        @db.Decimal(12, 2)
+  comisionTransportador Decimal?        @db.Decimal(12, 2)
+  clienteEmisor         Cliente        @relation("ClientesToEncomiendas_cedulaEmisor", fields: [cedulaEmisor], references: [cedula], map: "Encomiendas_ibfk_1")
+  clienteReceptor       Cliente        @relation("ClientesToEncomiendas_cedulaReceptor", fields: [cedulaReceptor], references: [cedula], map: "Encomiendas_ibfk_2")
+  transportador         Transportador @relation(fields: [cedulaTransportador], references: [cedula], map: "Encomiendas_ibfk_5")
+  nucleoDestino         Nucleo         @relation("Encomiendas_idNucleoDestinoToNucleos", fields: [idNucleoDestino], references: [id], map: "Encomiendas_ibfk_4")
+  nucleoOrigen          Nucleo         @relation("Encomiendas_idNucleoOrigenToNucleos", fields: [idNucleoOrigen], references: [id], map: "Encomiendas_ibfk_3")
+  vuelo                 Vuelo?         @relation(fields: [idVuelo], references: [id], onDelete: Restrict, map: "Encomiendas_ibfk_6")
+  paquetes              Paquete[]
+
+  @@index([cedulaEmisor], map: "cedulaEmisor")
+  @@index([cedulaReceptor], map: "cedulaReceptor")
+  @@index([cedulaTransportador], map: "cedulaTransportador")
+  @@index([idNucleoDestino], map: "idNucleoDestino")
+  @@index([idNucleoOrigen], map: "idNucleoOrigen")
+  @@index([idVuelo], map: "idVuelo")
+  @@map("Encomiendas")
+}
+
+model Nucleo {
+  id                 Int               @id @default(autoincrement())
+  nombre             String            @db.VarChar(50)
+  telefono           String            @db.VarChar(16)
+  idDireccion        Int
+  direccion          Direccion       @relation(fields: [idDireccion], references: [id], map: "Nucleos_ibfk_1")
+  encomiendasOrigen  Encomienda[]     @relation("Encomiendas_idNucleoDestinoToNucleos")
+  encomiendasDestino Encomienda[]     @relation("Encomiendas_idNucleoOrigenToNucleos")
+  transportadores    Transportador[]
+
+  @@index([idDireccion], map: "idDireccion")
+  @@map("Nucleos")
+}
+
+model Paquete {
+  id           Int         @id @default(autoincrement())
+  empaquetado  Boolean
+  peso         Int
+  alto         Int?
+  ancho        Int?
+  profundidad  Int?
+  fragil       Boolean
+  idEncomienda Int
+  tarifa       Decimal?    @db.Decimal(12, 2)
+  encomienda   Encomienda @relation(fields: [idEncomienda], references: [id], map: "Paquetes_ibfk_1")
+  articulos    Articulo[]
+
+  @@index([idEncomienda], map: "idEncomienda")
+  @@map("Paquetes")
+}
+
+model Recarga {
+  id            Int      @id @default(autoincrement())
+  precio        Decimal  @db.Decimal(12, 2)
+  fecha         DateTime @default(dbgenerated("(curdate())")) @db.Date
+  saldo         Decimal  @db.Decimal(12, 2)
+  cedulaCliente String   @db.VarChar(16)
+  cliente       Cliente @relation(fields: [cedulaCliente], references: [cedula], onDelete: Cascade, map: "Recargas_ibfk_1")
+
+  @@index([cedulaCliente], map: "cedulaCliente")
+  @@map("Recargas")
+}
+
+model Retiro {
+  id                  Int              @id @default(autoincrement())
+  precio              Decimal          @db.Decimal(12, 2)
+  fecha               DateTime         @default(dbgenerated("(curdate())")) @db.Date
+  saldo               Decimal          @db.Decimal(12, 2)
+  cedulaCliente       String?          @db.VarChar(16)
+  cedulaTransportador String?          @db.VarChar(16)
+  cliente             Cliente?        @relation(fields: [cedulaCliente], references: [cedula], onDelete: Cascade, map: "Retiros_ibfk_1")
+  transportador       Transportador? @relation(fields: [cedulaTransportador], references: [cedula], onDelete: Cascade, map: "Retiros_ibfk_2")
+
+  @@index([cedulaCliente], map: "cedulaCliente")
+  @@index([cedulaTransportador], map: "cedulaTransportador")
+  @@map("Retiros")
+}
+
+model Transportador {
+  cedula              String             @id @db.VarChar(16)
+  nombre              String             @db.VarChar(20)
+  apellido            String             @db.VarChar(20)
+  telefono            String             @db.VarChar(16)
+  telefonoAlternativo String?            @db.VarChar(16)
+  email               String             @unique(map: "email") @db.VarChar(64)
+  fechaIngreso        DateTime           @db.Date
+  disponible          Boolean
+  antecedentesPenales Boolean
+  licencia            Boolean
+  idNucleo            Int
+  idDireccion         Int
+  direccion           Direccion        @relation(fields: [idDireccion], references: [id], map: "Transportadores_ibfk_1")
+  nucleo              Nucleo            @relation(fields: [idNucleo], references: [id], map: "Transportadores_ibfk_2")
+  cursos              CursosRealizados[]
+  encomiendas         Encomienda[]
+  retiros             Retiro[]
+  vehiculos           Vehiculo[]
+
+  @@index([idDireccion], map: "idDireccion")
+  @@index([idNucleo], map: "idNucleo")
+  @@map("Transportadores")
+}
+
+model Vehiculo {
+  id                  Int             @id @default(autoincrement())
+  color               String          @db.VarChar(20)
+  tipo                String          @db.VarChar(10)
+  marca               String?         @db.VarChar(20)
+  modelo              String?         @db.VarChar(20)
+  placa               String?         @db.VarChar(10)
+  cedulaTransportador String          @db.VarChar(16)
+  transportador       Transportador @relation(fields: [cedulaTransportador], references: [cedula], map: "Vehiculos_ibfk_1")
+
+  @@index([cedulaTransportador], map: "cedulaTransportador")
+  @@map("Vehiculos")
+}
+
+model Vuelo {
+  id                       Int           @id @default(autoincrement())
+  duracionVuelo            Int?
+  fechaHoraSalidaEstimada  DateTime      @default(dbgenerated("('0000-00-00 00:00:00')")) @db.Timestamp(0)
+  fechaHoraLlegadaEstimada DateTime      @default(dbgenerated("('0000-00-00 00:00:00')")) @db.Timestamp(0)
+  idDireccionOrigen        Int
+  idDireccionDestino       Int
+  descripcionRetraso       String?       @db.VarChar(255)
+  duracionRetraso          Int?
+  direccionDestino         Direccion   @relation("DireccionesToVuelos_idDireccionDestino", fields: [idDireccionDestino], references: [id], map: "Vuelos_ibfk_2")
+  direccionOrigen          Direccion   @relation("DireccionesToVuelos_idDireccionOrigen", fields: [idDireccionOrigen], references: [id], map: "Vuelos_ibfk_1")
+  encomiendas              Encomienda[]
+
+  @@index([idDireccionDestino], map: "idDireccionDestino")
+  @@index([idDireccionOrigen], map: "idDireccionOrigen")
+  @@map("Vuelos")
+}
