@@ -20,7 +20,7 @@ const Transportador = gql`
     nucleo: Nucleo!
     direccion: Direccion!
     vehiculos: [Vehiculo]!
-    retiros: [Retiro]!
+    retiros: [RetiroTransportador]!
     cursos: [Curso]!
     encomiendas: [Encomienda]!
     saldo: Float!

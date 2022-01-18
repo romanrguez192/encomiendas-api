@@ -10,6 +10,11 @@ const { VehiculoMotor, vehiculoMotorResolvers } = require("./vehiculoMotor");
 const { Bicicleta, bicicletaResolvers } = require("./bicicleta");
 const { Recarga, recargaResolvers } = require("./recarga");
 const { Retiro, retiroResolvers } = require("./retiro");
+const { RetiroCliente, retiroClienteResolvers } = require("./retiroCliente");
+const {
+  RetiroTransportador,
+  retiroTransportadorResolvers,
+} = require("./retiroTransportador");
 const { Curso, cursoResolvers } = require("./curso");
 const { Vuelo, vueloResolvers } = require("./vuelo");
 const { Encomienda, encomiendaResolvers } = require("./encomienda");
@@ -58,6 +63,8 @@ const schema = makeExecutableSchema({
     Bicicleta,
     Recarga,
     Retiro,
+    RetiroCliente,
+    RetiroTransportador,
     Curso,
     Vuelo,
     Encomienda,
@@ -77,6 +84,8 @@ const schema = makeExecutableSchema({
     bicicletaResolvers,
     recargaResolvers,
     retiroResolvers,
+    retiroClienteResolvers,
+    retiroTransportadorResolvers,
     cursoResolvers,
     vueloResolvers,
     encomiendaResolvers,

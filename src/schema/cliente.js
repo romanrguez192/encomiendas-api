@@ -15,7 +15,7 @@ const Cliente = gql`
     email: String!
     direccion: Direccion
     recargas: [Recarga]!
-    retiros: [Retiro]!
+    retiros: [RetiroCliente]!
     encomiendasEnviadas: [Encomienda]!
     encomiendasRecibidas: [Encomienda]!
     saldo: Float!

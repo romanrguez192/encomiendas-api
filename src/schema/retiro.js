@@ -6,13 +6,11 @@ const Retiro = gql`
     retiro(id: Int!): Retiro
   }
 
-  type Retiro {
+  interface Retiro {
     id: Int!
     precio: Float!
     saldo: Float!
     fecha: Date!
-    cliente: Cliente
-    transportador: Transportador
   }
 `;
 
@@ -30,19 +28,12 @@ const retiroResolvers = {
     },
   },
   Retiro: {
-    cliente: (parent, _args, context) => {
-      return context.prisma.cliente.findUnique({
-        where: {
-          cedula: parent.cedulaCliente || "",
-        },
-      });
-    },
-    transportador: (parent, _args, context) => {
-      return context.prisma.transportador.findUnique({
-        where: {
-          cedula: parent.cedulaTransportador || "",
-        },
-      });
+    __resolveType: (parent) => {
+      if (parent.cedulaCliente) {
+        return "RetiroCliente";
+      }
+
+      return "RetiroTransportador";
     },
   },
 };
