@@ -216,3 +216,12 @@ model Vuelo {
   @@index([idDireccionOrigen], map: "idDireccionOrigen")
   @@map("Vuelos")
 }
+
+model VistaVuelo {
+  id                   Int       @id
+  retraso              Boolean
+  fechaHoraSalidaReal  DateTime?
+  fechaHoraLlegadaReal DateTime?
+
+  @@map("VistaVuelos")
+}

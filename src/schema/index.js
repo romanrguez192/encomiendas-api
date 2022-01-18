@@ -11,6 +11,7 @@ const { Bicicleta, bicicletaResolvers } = require("./bicicleta");
 const { Recarga, recargaResolvers } = require("./recarga");
 const { Retiro, retiroResolvers } = require("./retiro");
 const { Curso, cursoResolvers } = require("./curso");
+const { Vuelo, vueloResolvers } = require("./vuelo");
 
 const typeDefs = gql`
   scalar Date
@@ -47,6 +48,7 @@ const schema = makeExecutableSchema({
     Recarga,
     Retiro,
     Curso,
+    Vuelo,
   ],
   resolvers: [
     resolvers,
@@ -60,6 +62,7 @@ const schema = makeExecutableSchema({
     recargaResolvers,
     retiroResolvers,
     cursoResolvers,
+    vueloResolvers,
   ],
   inheritResolversFromInterfaces: true,
 });
