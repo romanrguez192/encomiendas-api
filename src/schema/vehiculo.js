@@ -28,8 +28,8 @@ const vehiculoResolvers = {
     },
   },
   Vehiculo: {
-    __resolveType: (obj) => {
-      if (obj.tipo === "motor") {
+    __resolveType: (parent) => {
+      if (parent.tipo === "motor") {
         return "VehiculoMotor";
       }
 

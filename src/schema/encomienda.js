@@ -6,7 +6,7 @@ const Encomienda = gql`
     encomienda(id: Int!): Encomienda
   }
 
-  type Encomienda {
+  interface Encomienda {
     id: Int!
     tipo: String!
     status: String!
@@ -19,7 +19,6 @@ const Encomienda = gql`
     transportador: Transportador!
     nucleoOrigen: Nucleo!
     nucleoDestino: Nucleo!
-    vuelo: Vuelo
   }
 `;
 
@@ -37,6 +36,13 @@ const encomiendaResolvers = {
     },
   },
   Encomienda: {
+    __resolveType: (parent) => {
+      if (parent.tipo === "terrestre") {
+        return "EncomiendaTerrestre";
+      }
+
+      return "EncomiendaAerea";
+    },
     clienteEmisor: (parent, _args, context) => {
       return context.prisma.cliente.findUnique({
         where: {
@@ -69,17 +75,6 @@ const encomiendaResolvers = {
       return context.prisma.nucleo.findUnique({
         where: {
           id: parent.idNucleoDestino,
-        },
-      });
-    },
-    vuelo: (parent, _args, context) => {
-      if (!parent.idVuelo) {
-        return null;
-      }
-
-      return context.prisma.vuelo.findUnique({
-        where: {
-          id: parent.idVuelo,
         },
       });
     },
