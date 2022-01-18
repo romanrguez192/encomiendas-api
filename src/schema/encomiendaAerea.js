@@ -19,6 +19,7 @@ const EncomiendaAerea = gql`
     nucleoOrigen: Nucleo!
     nucleoDestino: Nucleo!
     vuelo: Vuelo!
+    paquetes: [Paquete]!
   }
 `;
 

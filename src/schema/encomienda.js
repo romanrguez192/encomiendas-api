@@ -19,6 +19,7 @@ const Encomienda = gql`
     transportador: Transportador!
     nucleoOrigen: Nucleo!
     nucleoDestino: Nucleo!
+    paquetes: [Paquete]!
   }
 `;
 
@@ -75,6 +76,13 @@ const encomiendaResolvers = {
       return context.prisma.nucleo.findUnique({
         where: {
           id: parent.idNucleoDestino,
+        },
+      });
+    },
+    paquetes: (parent, _args, context) => {
+      return context.prisma.paquete.findMany({
+        where: {
+          idEncomienda: parent.id,
         },
       });
     },

@@ -18,6 +18,7 @@ const EncomiendaTerrestre = gql`
     transportador: Transportador!
     nucleoOrigen: Nucleo!
     nucleoDestino: Nucleo!
+    paquetes: [Paquete]!
   }
 `;
 
