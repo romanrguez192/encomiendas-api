@@ -18,6 +18,7 @@ const Cliente = gql`
     retiros: [Retiro]!
     encomiendasEnviadas: [Encomienda]!
     encomiendasRecibidas: [Encomienda]!
+    saldo: Float!
   }
 `;
 
@@ -69,6 +70,15 @@ const clienteResolvers = {
           cedulaReceptor: parent.cedula,
         },
       });
+    },
+    saldo: async (parent, _args, context) => {
+      const cliente = await context.prisma.vistaCliente.findUnique({
+        where: {
+          cedula: parent.cedula,
+        },
+      });
+
+      return cliente.saldo;
     },
   },
 };

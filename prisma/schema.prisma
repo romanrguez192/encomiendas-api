@@ -36,6 +36,13 @@ model Cliente {
   @@map("Clientes")
 }
 
+model VistaCliente {
+  cedula String  @id @db.VarChar(16)
+  saldo  Decimal @db.Decimal(12, 2)
+
+  @@map("VistaClientes")
+}
+
 model Curso {
   id              Int                @id @default(autoincrement())
   nombre          String             @db.VarChar(50)
@@ -183,6 +190,14 @@ model Transportador {
   @@index([idDireccion], map: "idDireccion")
   @@index([idNucleo], map: "idNucleo")
   @@map("Transportadores")
+}
+
+model VistaTransportador {
+  cedula          String  @id @db.VarChar(16)
+  saldo           Decimal @db.Decimal(12, 2)
+  cantidadPedidos Int
+
+  @@map("VistaTransportadores")
 }
 
 model Vehiculo {

@@ -23,6 +23,8 @@ const Transportador = gql`
     retiros: [Retiro]!
     cursos: [Curso]!
     encomiendas: [Encomienda]!
+    saldo: Float!
+    cantidadPedidos: Int!
   }
 `;
 
@@ -87,6 +89,24 @@ const transportadorResolvers = {
           cedulaTransportador: parent.cedula,
         },
       });
+    },
+    saldo: async (parent, _args, context) => {
+      const transportador = await context.prisma.vistaTransportador.findUnique({
+        where: {
+          cedula: parent.cedula,
+        },
+      });
+
+      return transportador.saldo;
+    },
+    cantidadPedidos: async (parent, _args, context) => {
+      const transportador = await context.prisma.vistaTransportador.findUnique({
+        where: {
+          cedula: parent.cedula,
+        },
+      });
+
+      return transportador.cantidadPedidos;
     },
   },
 };
