@@ -16,6 +16,8 @@ const typeDefs = gql`
     transportador(cedula: String!): Transportador
     vehiculos: [Vehiculo]!
     vehiculo(id: Int!): Vehiculo
+    vehiculosMotor: [VehiculoMotor]!
+    bicicletas: [Bicicleta]!
     recargas: [Recarga]!
     recarga(id: Int!): Recarga
     retiros: [Retiro]!
@@ -73,13 +75,27 @@ const typeDefs = gql`
     cursos: [Curso]!
   }
 
-  type Vehiculo {
+  interface Vehiculo {
     id: Int!
     color: String!
     tipo: String!
+    transportador: Transportador!
+  }
+
+  type VehiculoMotor implements Vehiculo {
+    id: Int!
+    color: String!
+    tipo: String!
+    transportador: Transportador!
     marca: String
     modelo: String
     placa: String
+  }
+
+  type Bicicleta implements Vehiculo {
+    id: Int!
+    color: String!
+    tipo: String!
     transportador: Transportador!
   }
 
@@ -160,6 +176,20 @@ const resolvers = {
       return context.prisma.vehiculo.findUnique({
         where: {
           id: args.id,
+        },
+      });
+    },
+    vehiculosMotor: (_parent, _args, context) => {
+      return context.prisma.vehiculo.findMany({
+        where: {
+          tipo: "motor",
+        },
+      });
+    },
+    bicicletas: (_parent, _args, context) => {
+      return context.prisma.vehiculo.findMany({
+        where: {
+          tipo: "bicicleta",
         },
       });
     },
@@ -300,6 +330,13 @@ const resolvers = {
     },
   },
   Vehiculo: {
+    __resolveType: (obj) => {
+      if (obj.tipo === "motor") {
+        return "VehiculoMotor";
+      }
+
+      return "Bicicleta";
+    },
     transportador: (parent, _args, context) => {
       return context.prisma.transportador.findUnique({
         where: {
@@ -308,6 +345,26 @@ const resolvers = {
       });
     },
   },
+  // OJO
+  VehiculoMotor: {
+    transportador: (parent, _args, context) => {
+      return context.prisma.transportador.findUnique({
+        where: {
+          cedula: parent.cedulaTransportador,
+        },
+      });
+    },
+  },
+  Bicicleta: {
+    transportador: (parent, _args, context) => {
+      return context.prisma.transportador.findUnique({
+        where: {
+          cedula: parent.cedulaTransportador,
+        },
+      });
+    },
+  },
+  // FIN OJO
   Recarga: {
     cliente: (parent, _args, context) => {
       return context.prisma.cliente.findUnique({
