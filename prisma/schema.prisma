@@ -12,7 +12,7 @@ model Articulo {
   numero      Int
   cantidad    Int
   descripcion String  @db.VarChar(255)
-  paquetes    Paquete @relation(fields: [idPaquete], references: [id], map: "Articulos_ibfk_1")
+  paquete     Paquete @relation(fields: [idPaquete], references: [id], map: "Articulos_ibfk_1")
 
   @@id([idPaquete, numero])
   @@map("Articulos")

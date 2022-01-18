@@ -10,12 +10,13 @@ const Paquete = gql`
     id: Int!
     empaquetado: Boolean!
     peso: Int
-    alto: Int!
-    ancho: Int!
-    profundidad: Int!
+    alto: Int
+    ancho: Int
+    profundidad: Int
     fragil: Boolean!
     tarifa: Float
     encomienda: Encomienda!
+    articulos: [Articulo]!
   }
 `;
 
@@ -37,6 +38,13 @@ const paqueteResolvers = {
       return context.prisma.encomienda.findUnique({
         where: {
           id: parent.idEncomienda,
+        },
+      });
+    },
+    articulos: (parent, _args, context) => {
+      return context.prisma.articulo.findMany({
+        where: {
+          idPaquete: parent.id,
         },
       });
     },

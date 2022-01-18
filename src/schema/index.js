@@ -22,6 +22,7 @@ const {
   encomiendaAereaResolvers,
 } = require("./encomiendaAerea");
 const { Paquete, paqueteResolvers } = require("./paquete");
+const { Articulo, articuloResolvers } = require("./articulo");
 
 const typeDefs = gql`
   scalar Date
@@ -63,6 +64,7 @@ const schema = makeExecutableSchema({
     EncomiendaTerrestre,
     EncomiendaAerea,
     Paquete,
+    Articulo,
   ],
   resolvers: [
     resolvers,
@@ -81,6 +83,7 @@ const schema = makeExecutableSchema({
     encomiendaTerrestreResolvers,
     encomiendaAereaResolvers,
     paqueteResolvers,
+    articuloResolvers,
   ],
   inheritResolversFromInterfaces: true,
 });
