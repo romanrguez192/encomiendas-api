@@ -1,13 +1,13 @@
 const { gql } = require("apollo-server-express");
+const { makeExecutableSchema } = require("@graphql-tools/schema");
 const { DateResolver, DateTimeResolver } = require("graphql-scalars");
+const { Cliente, clienteResolvers } = require("./cliente");
 
 const typeDefs = gql`
   scalar Date
   scalar DateTime
 
   type Query {
-    clientes: [Cliente]!
-    cliente(cedula: String!): Cliente
     direcciones: [Direccion]!
     direccion(id: Int!): Direccion
     nucleos: [Nucleo]!
@@ -24,18 +24,6 @@ const typeDefs = gql`
     retiro(id: Int!): Retiro
     cursos: [Curso]!
     curso(id: Int!): Curso
-  }
-
-  type Cliente {
-    cedula: String!
-    nombre: String!
-    apellido: String!
-    telefono: String!
-    telefonoAlternativo: String
-    email: String!
-    direccion: Direccion
-    recargas: [Recarga]!
-    retiros: [Retiro]!
   }
 
   type Direccion {
@@ -129,16 +117,6 @@ const resolvers = {
   Date: DateResolver,
   DateTime: DateTimeResolver,
   Query: {
-    clientes: (_parent, _args, context) => {
-      return context.prisma.cliente.findMany();
-    },
-    cliente: (_parent, args, context) => {
-      return context.prisma.cliente.findUnique({
-        where: {
-          cedula: args.cedula,
-        },
-      });
-    },
     direcciones: (_parent, _args, context) => {
       return context.prisma.direccion.findMany();
     },
@@ -224,29 +202,7 @@ const resolvers = {
       });
     },
   },
-  Cliente: {
-    direccion: (parent, _args, context) => {
-      return context.prisma.direccion.findUnique({
-        where: {
-          id: parent.idDireccion,
-        },
-      });
-    },
-    recargas: (parent, _args, context) => {
-      return context.prisma.recarga.findMany({
-        where: {
-          cedulaCliente: parent.cedula,
-        },
-      });
-    },
-    retiros: (parent, _args, context) => {
-      return context.prisma.retiro.findMany({
-        where: {
-          cedulaCliente: parent.cedula,
-        },
-      });
-    },
-  },
+
   Direccion: {
     clientes: (parent, _args, context) => {
       return context.prisma.cliente.findMany({
@@ -345,26 +301,6 @@ const resolvers = {
       });
     },
   },
-  // OJO
-  VehiculoMotor: {
-    transportador: (parent, _args, context) => {
-      return context.prisma.transportador.findUnique({
-        where: {
-          cedula: parent.cedulaTransportador,
-        },
-      });
-    },
-  },
-  Bicicleta: {
-    transportador: (parent, _args, context) => {
-      return context.prisma.transportador.findUnique({
-        where: {
-          cedula: parent.cedulaTransportador,
-        },
-      });
-    },
-  },
-  // FIN OJO
   Recarga: {
     cliente: (parent, _args, context) => {
       return context.prisma.cliente.findUnique({
@@ -407,7 +343,10 @@ const resolvers = {
   },
 };
 
-module.exports = {
-  typeDefs,
-  resolvers,
-};
+const schema = makeExecutableSchema({
+  typeDefs: [typeDefs, Cliente],
+  resolvers: [resolvers, clienteResolvers],
+  inheritResolversFromInterfaces: true,
+});
+
+module.exports = schema;
