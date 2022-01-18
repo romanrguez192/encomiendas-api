@@ -12,6 +12,8 @@ const Nucleo = gql`
     telefono: String!
     direccion: Direccion
     transportadores: [Transportador]!
+    encomiendasEnviadas: [Encomienda]!
+    encomiendasRecibidas: [Encomienda]!
   }
 `;
 
@@ -40,6 +42,20 @@ const nucleoResolvers = {
       return context.prisma.transportador.findMany({
         where: {
           idNucleo: parent.id,
+        },
+      });
+    },
+    encomiendasEnviadas: (parent, _args, context) => {
+      return context.prisma.encomienda.findMany({
+        where: {
+          idNucleoOrigen: parent.id,
+        },
+      });
+    },
+    encomiendasRecibidas: (parent, _args, context) => {
+      return context.prisma.encomienda.findMany({
+        where: {
+          idNucleoDestino: parent.id,
         },
       });
     },

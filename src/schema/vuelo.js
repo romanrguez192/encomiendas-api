@@ -18,6 +18,7 @@ const Vuelo = gql`
     duracionRetraso: Int
     direccionOrigen: Direccion!
     direccionDestino: Direccion!
+    encomiendas: [EncomiendaAerea]!
   }
 `;
 
@@ -73,6 +74,13 @@ const vueloResolvers = {
       return context.prisma.direccion.findUnique({
         where: {
           id: parent.idDireccionDestino,
+        },
+      });
+    },
+    encomiendas: (parent, _args, context) => {
+      return context.prisma.encomienda.findMany({
+        where: {
+          idVuelo: parent.id,
         },
       });
     },

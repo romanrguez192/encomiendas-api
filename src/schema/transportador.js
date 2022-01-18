@@ -22,6 +22,7 @@ const Transportador = gql`
     vehiculos: [Vehiculo]!
     retiros: [Retiro]!
     cursos: [Curso]!
+    encomiendas: [Encomienda]!
   }
 `;
 
@@ -77,6 +78,13 @@ const transportadorResolvers = {
               },
             },
           },
+        },
+      });
+    },
+    encomiendas: (parent, _args, context) => {
+      return context.prisma.encomienda.findMany({
+        where: {
+          cedulaTransportador: parent.cedula,
         },
       });
     },

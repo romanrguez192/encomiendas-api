@@ -16,6 +16,8 @@ const Cliente = gql`
     direccion: Direccion
     recargas: [Recarga]!
     retiros: [Retiro]!
+    encomiendasEnviadas: [Encomienda]!
+    encomiendasRecibidas: [Encomienda]!
   }
 `;
 
@@ -51,6 +53,20 @@ const clienteResolvers = {
       return context.prisma.retiro.findMany({
         where: {
           cedulaCliente: parent.cedula,
+        },
+      });
+    },
+    encomiendasEnviadas: (parent, _args, context) => {
+      return context.prisma.encomienda.findMany({
+        where: {
+          cedulaEmisor: parent.cedula,
+        },
+      });
+    },
+    encomiendasRecibidas: (parent, _args, context) => {
+      return context.prisma.encomienda.findMany({
+        where: {
+          cedulaReceptor: parent.cedula,
         },
       });
     },
