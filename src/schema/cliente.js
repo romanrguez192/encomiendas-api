@@ -20,6 +20,32 @@ const Cliente = gql`
     encomiendasRecibidas: [Encomienda]!
     saldo: Float!
   }
+
+  extend type Mutation {
+    createCliente(cliente: ClienteInput!): Cliente
+    updateCliente(cedula: String!, cliente: ClienteUpdateInput!): Cliente
+    deleteCliente(cedula: String!): Cliente
+  }
+
+  input ClienteInput {
+    cedula: String!
+    nombre: String!
+    apellido: String!
+    telefono: String!
+    telefonoAlternativo: String
+    email: String!
+    idDireccion: Int!
+  }
+
+  input ClienteUpdateInput {
+    cedula: String
+    nombre: String
+    apellido: String
+    telefono: String
+    telefonoAlternativo: String
+    email: String
+    idDireccion: Int
+  }
 `;
 
 const clienteResolvers = {
@@ -29,6 +55,28 @@ const clienteResolvers = {
     },
     cliente: (_parent, args, context) => {
       return context.prisma.cliente.findUnique({
+        where: {
+          cedula: args.cedula,
+        },
+      });
+    },
+  },
+  Mutation: {
+    createCliente: (_parent, args, context) => {
+      return context.prisma.cliente.create({
+        data: args.cliente,
+      });
+    },
+    updateCliente: (_parent, args, context) => {
+      return context.prisma.cliente.update({
+        where: {
+          cedula: args.cedula,
+        },
+        data: args.cliente,
+      });
+    },
+    deleteCliente: (_parent, args, context) => {
+      return context.prisma.cliente.delete({
         where: {
           cedula: args.cedula,
         },
