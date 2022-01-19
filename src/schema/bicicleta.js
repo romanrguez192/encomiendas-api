@@ -11,6 +11,15 @@ const Bicicleta = gql`
     tipo: String!
     transportador: Transportador!
   }
+
+  extend type Mutation {
+    createBicicleta(bicicleta: BicicletaInput): Bicicleta
+  }
+
+  input BicicletaInput {
+    color: String!
+    cedulaTransportador: String!
+  }
 `;
 
 const bicicletaResolvers = {
@@ -18,6 +27,16 @@ const bicicletaResolvers = {
     bicicletas: (_parent, _args, context) => {
       return context.prisma.vehiculo.findMany({
         where: {
+          tipo: "bicicleta",
+        },
+      });
+    },
+  },
+  Mutation: {
+    createBicicleta: async (_parent, args, context) => {
+      return context.prisma.vehiculo.create({
+        data: {
+          ...args.bicicleta,
           tipo: "bicicleta",
         },
       });

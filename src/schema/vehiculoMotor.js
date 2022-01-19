@@ -10,9 +10,21 @@ const VehiculoMotor = gql`
     color: String!
     tipo: String!
     transportador: Transportador!
-    marca: String
-    modelo: String
-    placa: String
+    marca: String!
+    modelo: String!
+    placa: String!
+  }
+
+  extend type Mutation {
+    createVehiculoMotor(vehiculoMotor: VehiculoMotorInput): VehiculoMotor
+  }
+
+  input VehiculoMotorInput {
+    color: String!
+    cedulaTransportador: String!
+    marca: String!
+    modelo: String!
+    placa: String!
   }
 `;
 
@@ -21,6 +33,16 @@ const vehiculoMotorResolvers = {
     vehiculosMotor: (_parent, _args, context) => {
       return context.prisma.vehiculo.findMany({
         where: {
+          tipo: "motor",
+        },
+      });
+    },
+  },
+  Mutation: {
+    createVehiculoMotor: async (_parent, args, context) => {
+      return context.prisma.vehiculo.create({
+        data: {
+          ...args.vehiculoMotor,
           tipo: "motor",
         },
       });

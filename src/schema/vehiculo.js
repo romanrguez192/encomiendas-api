@@ -12,6 +12,20 @@ const Vehiculo = gql`
     tipo: String!
     transportador: Transportador!
   }
+
+  extend type Mutation {
+    updateVehiculo(id: Int!, vehiculo: VehiculoInput): Vehiculo
+    deleteVehiculo(id: Int!): Vehiculo
+  }
+
+  input VehiculoInput {
+    color: String
+    tipo: String
+    cedulaTransportador: String
+    marca: String
+    modelo: String
+    placa: String
+  }
 `;
 
 const vehiculoResolvers = {
@@ -21,6 +35,23 @@ const vehiculoResolvers = {
     },
     vehiculo: (_parent, args, context) => {
       return context.prisma.vehiculo.findUnique({
+        where: {
+          id: args.id,
+        },
+      });
+    },
+  },
+  Mutation: {
+    updateVehiculo: async (_parent, args, context) => {
+      return context.prisma.vehiculo.update({
+        where: {
+          id: args.id,
+        },
+        data: args.vehiculo,
+      });
+    },
+    deleteVehiculo: async (_parent, args, context) => {
+      return context.prisma.vehiculo.delete({
         where: {
           id: args.id,
         },
