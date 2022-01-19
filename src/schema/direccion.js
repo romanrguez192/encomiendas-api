@@ -16,6 +16,26 @@ const Direccion = gql`
     nucleos: [Nucleo]!
     transportadores: [Transportador]!
   }
+
+  extend type Mutation {
+    createDireccion(direccion: DireccionInput!): Direccion
+    updateDireccion(id: Int!, direccion: DireccionUpdateInput!): Direccion
+    deleteDireccion(id: Int!): Direccion
+  }
+
+  input DireccionInput {
+    pais: String!
+    ciudad: String!
+    estado: String!
+    parroquia: String!
+  }
+
+  input DireccionUpdateInput {
+    pais: String
+    ciudad: String
+    estado: String
+    parroquia: String
+  }
 `;
 
 const direccionResolvers = {
@@ -25,6 +45,28 @@ const direccionResolvers = {
     },
     direccion: (_parent, args, context) => {
       return context.prisma.direccion.findUnique({
+        where: {
+          id: args.id,
+        },
+      });
+    },
+  },
+  Mutation: {
+    createDireccion: (_parent, args, context) => {
+      return context.prisma.direccion.create({
+        data: args.direccion,
+      });
+    },
+    updateDireccion: (_parent, args, context) => {
+      return context.prisma.direccion.update({
+        where: {
+          id: args.id,
+        },
+        data: args.direccion,
+      });
+    },
+    deleteDireccion: (_parent, args, context) => {
+      return context.prisma.direccion.delete({
         where: {
           id: args.id,
         },

@@ -36,12 +36,24 @@ const typeDefs = gql`
   type Query {
     autores: [String!]!
   }
+
+  type Mutation {
+    autores: [String!]!
+  }
 `;
 
 const resolvers = {
   Date: DateResolver,
   DateTime: DateTimeResolver,
   Query: {
+    autores: () => [
+      "Román Rodríguez",
+      "Luisa López",
+      "María Guerra",
+      "Mónica Cuaulma",
+    ],
+  },
+  Mutation: {
     autores: () => [
       "Román Rodríguez",
       "Luisa López",
