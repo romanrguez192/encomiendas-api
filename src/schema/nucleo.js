@@ -10,10 +10,28 @@ const Nucleo = gql`
     id: Int!
     nombre: String!
     telefono: String!
-    direccion: Direccion
+    direccion: Direccion!
     transportadores: [Transportador]!
     encomiendasEnviadas: [Encomienda]!
     encomiendasRecibidas: [Encomienda]!
+  }
+
+  extend type Mutation {
+    createNucleo(nucleo: NucleoInput!): Nucleo
+    updateNucleo(id: Int!, nucleo: NucleoUpdateInput!): Nucleo
+    deleteNucleo(id: Int!): Nucleo
+  }
+
+  input NucleoInput {
+    nombre: String!
+    telefono: String!
+    idDireccion: Int!
+  }
+
+  input NucleoUpdateInput {
+    nombre: String
+    telefono: String
+    idDireccion: Int
   }
 `;
 
@@ -24,6 +42,28 @@ const nucleoResolvers = {
     },
     nucleo: (_parent, args, context) => {
       return context.prisma.nucleo.findUnique({
+        where: {
+          id: args.id,
+        },
+      });
+    },
+  },
+  Mutation: {
+    createNucleo: (_parent, args, context) => {
+      return context.prisma.nucleo.create({
+        data: args.nucleo,
+      });
+    },
+    updateNucleo: (_parent, args, context) => {
+      return context.prisma.nucleo.update({
+        where: {
+          id: args.id,
+        },
+        data: args.nucleo,
+      });
+    },
+    deleteNucleo: (_parent, args, context) => {
+      return context.prisma.nucleo.delete({
         where: {
           id: args.id,
         },
