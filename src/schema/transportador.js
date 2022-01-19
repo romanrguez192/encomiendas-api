@@ -26,6 +26,45 @@ const Transportador = gql`
     saldo: Float!
     cantidadPedidos: Int!
   }
+
+  extend type Mutation {
+    createTransportador(transportador: TransportadorInput!): Transportador
+    updateTransportador(
+      cedula: String!
+      transportador: TransportadorUpdateInput!
+    ): Transportador
+    deleteTransportador(cedula: String!): Transportador
+  }
+
+  input TransportadorInput {
+    cedula: String!
+    nombre: String!
+    apellido: String!
+    telefono: String!
+    telefonoAlternativo: String
+    email: String!
+    fechaIngreso: Date!
+    disponible: Boolean!
+    antecedentesPenales: Boolean!
+    licencia: Boolean!
+    idNucleo: Int!
+    idDireccion: Int!
+  }
+
+  input TransportadorUpdateInput {
+    cedula: String
+    nombre: String
+    apellido: String
+    telefono: String
+    telefonoAlternativo: String
+    email: String
+    fechaIngreso: Date
+    disponible: Boolean
+    antecedentesPenales: Boolean
+    licencia: Boolean
+    idNucleo: Int
+    idDireccion: Int
+  }
 `;
 
 const transportadorResolvers = {
@@ -35,6 +74,28 @@ const transportadorResolvers = {
     },
     transportador: (_parent, args, context) => {
       return context.prisma.transportador.findUnique({
+        where: {
+          cedula: args.cedula,
+        },
+      });
+    },
+  },
+  Mutation: {
+    createTransportador: (_parent, args, context) => {
+      return context.prisma.transportador.create({
+        data: args.transportador,
+      });
+    },
+    updateTransportador: (_parent, args, context) => {
+      return context.prisma.transportador.update({
+        where: {
+          cedula: args.cedula,
+        },
+        data: args.transportador,
+      });
+    },
+    deleteTransportador: (_parent, args, context) => {
+      return context.prisma.transportador.delete({
         where: {
           cedula: args.cedula,
         },
