@@ -20,6 +20,32 @@ const Vuelo = gql`
     direccionDestino: Direccion!
     encomiendas: [EncomiendaAerea]!
   }
+
+  extend type Mutation {
+    createVuelo(vuelo: VueloInput!): Vuelo
+    updateVuelo(id: Int!, vuelo: VueloUpdateInput!): Vuelo
+    deleteVuelo(id: Int!): Vuelo
+  }
+
+  input VueloInput {
+    duracionVuelo: Int
+    fechaHoraSalidaEstimada: DateTime!
+    fechaHoraLlegadaEstimada: DateTime!
+    descripcionRetraso: String
+    duracionRetraso: Int
+    idDireccionOrigen: Int!
+    idDireccionDestino: Int!
+  }
+
+  input VueloUpdateInput {
+    duracionVuelo: Int
+    fechaHoraSalidaEstimada: DateTime
+    fechaHoraLlegadaEstimada: DateTime
+    descripcionRetraso: String
+    duracionRetraso: Int
+    idDireccionOrigen: Int
+    idDireccionDestino: Int
+  }
 `;
 
 const vueloResolvers = {
@@ -29,6 +55,28 @@ const vueloResolvers = {
     },
     vuelo: (_parent, args, context) => {
       return context.prisma.vuelo.findUnique({
+        where: {
+          id: args.id,
+        },
+      });
+    },
+  },
+  Mutation: {
+    createVuelo: (_parent, args, context) => {
+      return context.prisma.vuelo.create({
+        data: args.vuelo,
+      });
+    },
+    updateVuelo: (_parent, args, context) => {
+      return context.prisma.vuelo.update({
+        where: {
+          id: args.id,
+        },
+        data: args.vuelo,
+      });
+    },
+    deleteVuelo: (_parent, args, context) => {
+      return context.prisma.vuelo.delete({
         where: {
           id: args.id,
         },
