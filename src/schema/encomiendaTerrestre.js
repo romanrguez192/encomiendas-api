@@ -20,6 +20,25 @@ const EncomiendaTerrestre = gql`
     nucleoDestino: Nucleo!
     paquetes: [Paquete]!
   }
+
+  extend type Mutation {
+    createEncomiendaTerrestre(
+      encomiendaTerrestre: EncomiendaTerrestreInput!
+    ): EncomiendaTerrestre
+  }
+
+  input EncomiendaTerrestreInput {
+    cedulaEmisor: String!
+    cedulaReceptor: String!
+    status: String!
+    fechaHoraSalida: DateTime!
+    fechaHoraLlegada: DateTime
+    idNucleoOrigen: Int!
+    idNucleoDestino: Int!
+    cedulaTransportador: String!
+    precio: Float
+    comisionTransportador: Float
+  }
 `;
 
 const encomiendaTerrestreResolvers = {
@@ -28,6 +47,16 @@ const encomiendaTerrestreResolvers = {
       return context.prisma.encomienda.findMany({
         where: {
           tipo: "terrestre",
+        },
+      });
+    },
+  },
+  Mutation: {
+    createEncomiendaTerrestre: (_parent, args, context) => {
+      return context.prisma.encomienda.create({
+        data: {
+          tipo: "terrestre",
+          ...args.encomiendaTerrestre,
         },
       });
     },

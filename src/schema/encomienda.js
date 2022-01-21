@@ -21,6 +21,25 @@ const Encomienda = gql`
     nucleoDestino: Nucleo!
     paquetes: [Paquete]!
   }
+
+  extend type Mutation {
+    updateEncomienda(id: Int!, encomienda: EncomiendaInput!): Encomienda
+    deleteEncomienda(id: Int!): Encomienda
+  }
+
+  input EncomiendaInput {
+    cedulaEmisor: String
+    cedulaReceptor: String
+    status: String
+    fechaHoraSalida: DateTime
+    fechaHoraLlegada: DateTime
+    idNucleoOrigen: Int
+    idNucleoDestino: Int
+    cedulaTransportador: String
+    precio: Float
+    comisionTransportador: Float
+    idVuelo: Int
+  }
 `;
 
 const encomiendaResolvers = {
@@ -30,6 +49,23 @@ const encomiendaResolvers = {
     },
     encomienda: (_parent, args, context) => {
       return context.prisma.encomienda.findUnique({
+        where: {
+          id: args.id,
+        },
+      });
+    },
+  },
+  Mutation: {
+    updateEncomienda: (_parent, args, context) => {
+      return context.prisma.encomienda.update({
+        where: {
+          id: args.id,
+        },
+        data: args.encomienda,
+      });
+    },
+    deleteEncomienda: (_parent, args, context) => {
+      return context.prisma.encomienda.delete({
         where: {
           id: args.id,
         },

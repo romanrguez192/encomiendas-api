@@ -21,6 +21,26 @@ const EncomiendaAerea = gql`
     vuelo: Vuelo!
     paquetes: [Paquete]!
   }
+
+  extend type Mutation {
+    createEncomiendaAerea(
+      encomiendaAerea: EncomiendaAereaInput!
+    ): EncomiendaAerea
+  }
+
+  input EncomiendaAereaInput {
+    cedulaEmisor: String!
+    cedulaReceptor: String!
+    status: String!
+    fechaHoraSalida: DateTime!
+    fechaHoraLlegada: DateTime
+    idNucleoOrigen: Int!
+    idNucleoDestino: Int!
+    cedulaTransportador: String!
+    precio: Float
+    comisionTransportador: Float
+    idVuelo: Int!
+  }
 `;
 
 const encomiendaAereaResolvers = {
@@ -29,6 +49,16 @@ const encomiendaAereaResolvers = {
       return context.prisma.encomienda.findMany({
         where: {
           tipo: "aerea",
+        },
+      });
+    },
+  },
+  Mutation: {
+    createEncomiendaAerea: (_parent, args, context) => {
+      return context.prisma.encomienda.create({
+        data: {
+          tipo: "aerea",
+          ...args.encomiendaAerea,
         },
       });
     },
