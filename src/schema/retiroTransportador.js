@@ -12,6 +12,19 @@ const RetiroTransportador = gql`
     fecha: Date!
     transportador: Transportador
   }
+
+  extend type Mutation {
+    createRetiroTransportador(
+      retiroTransportador: RetiroTransportadorInput!
+    ): RetiroTransportador
+  }
+
+  input RetiroTransportadorInput {
+    precio: Float!
+    saldo: Float!
+    fecha: Date!
+    cedulaTransportador: String!
+  }
 `;
 
 const retiroTransportadorResolvers = {
@@ -21,6 +34,13 @@ const retiroTransportadorResolvers = {
         where: {
           cedulaCliente: null,
         },
+      });
+    },
+  },
+  Mutation: {
+    createRetiroTransportador: (_parent, args, context) => {
+      return context.prisma.retiro.create({
+        data: args.retiroTransportador,
       });
     },
   },
