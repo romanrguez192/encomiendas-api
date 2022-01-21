@@ -13,6 +13,24 @@ const Curso = gql`
     fecha: Date!
     transportadores: [Transportador]!
   }
+
+  extend type Mutation {
+    createCurso(curso: CursoInput!): Curso
+    updateCurso(id: Int!, curso: CursoUpdateInput!): Curso
+    deleteCurso(id: Int!): Curso
+  }
+
+  input CursoInput {
+    nombre: String!
+    lugar: String!
+    fecha: Date!
+  }
+
+  input CursoUpdateInput {
+    nombre: String
+    lugar: String
+    fecha: Date
+  }
 `;
 
 const cursoResolvers = {
@@ -22,6 +40,28 @@ const cursoResolvers = {
     },
     curso: (_parent, args, context) => {
       return context.prisma.curso.findUnique({
+        where: {
+          id: args.id,
+        },
+      });
+    },
+  },
+  Mutation: {
+    createCurso: (_parent, args, context) => {
+      return context.prisma.curso.create({
+        data: args.curso,
+      });
+    },
+    updateCurso: (_parent, args, context) => {
+      return context.prisma.curso.update({
+        where: {
+          id: args.id,
+        },
+        data: args.curso,
+      });
+    },
+    deleteCurso: (_parent, args, context) => {
+      return context.prisma.curso.delete({
         where: {
           id: args.id,
         },
