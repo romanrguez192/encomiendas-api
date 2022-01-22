@@ -18,6 +18,11 @@ const Curso = gql`
     createCurso(curso: CursoInput!): Curso
     updateCurso(id: Int!, curso: CursoUpdateInput!): Curso
     deleteCurso(id: Int!): Curso
+    addTransportadorToCurso(idCurso: Int!, cedulaTransportador: String!): Curso
+    deleteTransportadorFromCurso(
+      idCurso: Int!
+      cedulaTransportador: String!
+    ): Curso
   }
 
   input CursoInput {
@@ -64,6 +69,34 @@ const cursoResolvers = {
       return context.prisma.curso.delete({
         where: {
           id: args.id,
+        },
+      });
+    },
+    addTransportadorToCurso: (_parent, args, context) => {
+      return context.prisma.curso.update({
+        where: {
+          id: args.idCurso,
+        },
+        data: {
+          transportadores: {
+            create: {
+              cedulaTransportador: args.cedulaTransportador,
+            },
+          },
+        },
+      });
+    },
+    deleteTransportadorFromCurso: (_parent, args, context) => {
+      return context.prisma.curso.update({
+        where: {
+          id: args.idCurso,
+        },
+        data: {
+          transportadores: {
+            deleteMany: {
+              cedulaTransportador: args.cedulaTransportador,
+            },
+          },
         },
       });
     },
