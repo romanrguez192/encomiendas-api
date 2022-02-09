@@ -174,7 +174,7 @@ model Transportador {
   telefono            String             @db.VarChar(16)
   telefonoAlternativo String?            @db.VarChar(16)
   email               String             @unique(map: "email") @db.VarChar(64)
-  fechaIngreso        DateTime           @db.Date
+  fechaIngreso        DateTime?          @default(now()) @db.Date
   disponible          Boolean
   antecedentesPenales Boolean
   licencia            Boolean

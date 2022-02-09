@@ -51,7 +51,7 @@ const Transportador = gql`
     telefono: String!
     telefonoAlternativo: String
     email: String!
-    fechaIngreso: Date!
+    fechaIngreso: Date
     disponible: Boolean!
     antecedentesPenales: Boolean!
     licencia: Boolean!
