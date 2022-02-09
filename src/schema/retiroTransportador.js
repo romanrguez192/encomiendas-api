@@ -21,8 +21,8 @@ const RetiroTransportador = gql`
 
   input RetiroTransportadorInput {
     precio: Float!
-    saldo: Float!
-    fecha: Date!
+    saldo: Float
+    fecha: Date
     cedulaTransportador: String!
   }
 `;

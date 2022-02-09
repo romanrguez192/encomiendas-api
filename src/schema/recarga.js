@@ -22,8 +22,8 @@ const Recarga = gql`
 
   input RecargaInput {
     precio: Float!
-    fecha: Date!
-    saldo: Float!
+    fecha: Date
+    saldo: Float
     cedulaCliente: String!
   }
 
