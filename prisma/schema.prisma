@@ -141,12 +141,12 @@ model Paquete {
 }
 
 model Recarga {
-  id            Int      @id @default(autoincrement())
-  precio        Decimal  @db.Decimal(12, 2)
-  fecha         DateTime @default(dbgenerated("(curdate())")) @db.Date
-  saldo         Decimal  @db.Decimal(12, 2)
-  cedulaCliente String   @db.VarChar(16)
-  cliente       Cliente  @relation(fields: [cedulaCliente], references: [cedula], onDelete: Cascade, map: "Recargas_ibfk_1")
+  id            Int       @id @default(autoincrement())
+  precio        Decimal   @db.Decimal(12, 2)
+  fecha         DateTime? @default(now()) @db.Date
+  saldo         Decimal?  @db.Decimal(12, 2)
+  cedulaCliente String    @db.VarChar(16)
+  cliente       Cliente   @relation(fields: [cedulaCliente], references: [cedula], onDelete: Cascade, map: "Recargas_ibfk_1")
 
   @@index([cedulaCliente], map: "cedulaCliente")
   @@map("Recargas")
@@ -155,8 +155,8 @@ model Recarga {
 model Retiro {
   id                  Int            @id @default(autoincrement())
   precio              Decimal        @db.Decimal(12, 2)
-  fecha               DateTime       @default(dbgenerated("(curdate())")) @db.Date
-  saldo               Decimal        @db.Decimal(12, 2)
+  fecha               DateTime?      @default(now()) @db.Date
+  saldo               Decimal?       @db.Decimal(12, 2)
   cedulaCliente       String?        @db.VarChar(16)
   cedulaTransportador String?        @db.VarChar(16)
   cliente             Cliente?       @relation(fields: [cedulaCliente], references: [cedula], onDelete: Cascade, map: "Retiros_ibfk_1")
