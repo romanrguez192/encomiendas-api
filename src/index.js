@@ -4,6 +4,7 @@ const express = require("express");
 const http = require("http");
 const schema = require("./schema");
 const context = require("./context");
+const { formatError } = require("./utils");
 
 const startApolloServer = async () => {
   const app = express();
@@ -13,6 +14,8 @@ const startApolloServer = async () => {
     schema,
     context,
     plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
+    debug: false,
+    formatError,
   });
 
   await server.start();

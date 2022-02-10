@@ -2,7 +2,9 @@ const { gql } = require("apollo-server-express");
 
 const Cliente = gql`
   extend type Query {
+    "Consulta que retorna todos los clientes"
     clientes: [Cliente]!
+    "Consulta que retorna un cliente dada su cédula"
     cliente(cedula: String!): Cliente
   }
 

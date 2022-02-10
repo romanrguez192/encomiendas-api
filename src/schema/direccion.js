@@ -3,6 +3,7 @@ const { gql } = require("apollo-server-express");
 const Direccion = gql`
   extend type Query {
     direcciones: [Direccion]!
+    direccionesWhere(direccion: DireccionUpdateInput!): [Direccion]!
     direccion(id: Int!): Direccion
   }
 
@@ -42,6 +43,11 @@ const direccionResolvers = {
   Query: {
     direcciones: (_parent, _args, context) => {
       return context.prisma.direccion.findMany();
+    },
+    direccionesWhere: (_parent, args, context) => {
+      return context.prisma.direccion.findMany({
+        where: args.direccion,
+      });
     },
     direccion: (_parent, args, context) => {
       return context.prisma.direccion.findUnique({
