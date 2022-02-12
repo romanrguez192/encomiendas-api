@@ -2,75 +2,127 @@ const { gql } = require("apollo-server-express");
 
 const Transportador = gql`
   extend type Query {
+    "Consulta que retorna todos los transportadores"
     transportadores: [Transportador]!
+    "Consulta que retorna un transportador por id"
     transportador(cedula: String!): Transportador
   }
 
+  "Transportadores de la empresa"
   type Transportador {
+    "Cédula del transportador"
     cedula: String!
+    "Nombre del transportador"
     nombre: String!
+    "Apellido del transportador"
     apellido: String!
+    "Teléfono del transportador"
     telefono: String!
+    "Teléfono alternativo del transportador"
     telefonoAlternativo: String
+    "Email del transportador"
     email: String!
+    "Fecha de ingreso del transportador"
     fechaIngreso: Date!
+    "Disponibilidad del transportador para hacer encomiendas"
     disponible: Boolean!
+    "Si cuenta con antecedentes penales"
     antecedentesPenales: Boolean!
+    "Si cuenta con licencia para conducir"
     licencia: Boolean!
+    "Núcleo al que pertenece el transportador"
     nucleo: Nucleo!
+    "Dirección del transportador"
     direccion: Direccion!
+    "Vehículos del transportador"
     vehiculos: [Vehiculo]!
+    "Retiros hechos por el transportador"
     retiros: [RetiroTransportador]!
+    "Cursos hechos por el transportador"
     cursos: [Curso]!
+    "Encomiendas hechas por el transportador"
     encomiendas: [Encomienda]!
+    "Saldo del transportador"
     saldo: Float!
+    "Cantidad de encomiendas entregadas"
     cantidadPedidos: Int!
   }
 
   extend type Mutation {
+    "Crea un transportador"
     createTransportador(transportador: TransportadorInput!): Transportador
+    "Actualiza un transportador"
     updateTransportador(
       cedula: String!
       transportador: TransportadorUpdateInput!
     ): Transportador
+    "Elimina un transportador"
     deleteTransportador(cedula: String!): Transportador
+    "Le agrega un curso a un transportador"
     addCursoToTransportador(
       cedulaTransportador: String!
       idCurso: Int!
     ): Transportador
+    "Le elimina un curso a un transportador"
     deleteCursoFromTransportador(
       cedulaTransportador: String!
       idCurso: Int!
     ): Transportador
   }
 
+  "Input para crear un transportador"
   input TransportadorInput {
+    "Cédula del transportador"
     cedula: String!
+    "Nombre del transportador"
     nombre: String!
+    "Apellido del transportador"
     apellido: String!
+    "Teléfono del transportador"
     telefono: String!
+    "Teléfono alternativo del transportador"
     telefonoAlternativo: String
+    "Email del transportador"
     email: String!
+    "Fecha de ingreso del transportador"
     fechaIngreso: Date
+    "Disponibilidad del transportador para hacer encomiendas"
     disponible: Boolean!
+    "Si cuenta con antecedentes penales"
     antecedentesPenales: Boolean!
+    "Si cuenta con licencia para conducir"
     licencia: Boolean!
+    "Id del núcleo al que pertenece el transportador"
     idNucleo: Int!
+    "Id de la dirección del transportador"
     idDireccion: Int!
   }
 
+  "Input para actualizar un transportador"
   input TransportadorUpdateInput {
+    "Cédula del transportador"
     cedula: String
+    "Nombre del transportador"
     nombre: String
+    "Apellido del transportador"
     apellido: String
+    "Teléfono del transportador"
     telefono: String
+    "Teléfono alternativo del transportador"
     telefonoAlternativo: String
+    "Email del transportador"
     email: String
+    "Fecha de ingreso del transportador"
     fechaIngreso: Date
+    "Disponibilidad del transportador para hacer encomiendas"
     disponible: Boolean
+    "Si cuenta con antecedentes penales"
     antecedentesPenales: Boolean
+    "Si cuenta con licencia para conducir"
     licencia: Boolean
+    "Id del núcleo al que pertenece el transportador"
     idNucleo: Int
+    "Id de la dirección del transportador"
     idDireccion: Int
   }
 `;

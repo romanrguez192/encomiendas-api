@@ -2,38 +2,59 @@ const { gql } = require("apollo-server-express");
 
 const Curso = gql`
   extend type Query {
+    "Consulta que retorna todos los cursos"
     cursos: [Curso]!
+    "Consulta que retorna un curso por su id"
     curso(id: Int!): Curso
   }
 
+  "Cursos que realizan los transportadores"
   type Curso {
+    "Id del curso"
     id: Int!
+    "Nombre del curso"
     nombre: String!
+    "Lugar del curso"
     lugar: String!
+    "Fecha del curso"
     fecha: Date!
+    "Transportador que hicieron el curso"
     transportadores: [Transportador]!
   }
 
   extend type Mutation {
+    "Crea un curso"
     createCurso(curso: CursoInput!): Curso
+    "Actualiza un curso"
     updateCurso(id: Int!, curso: CursoUpdateInput!): Curso
+    "Elimina un curso"
     deleteCurso(id: Int!): Curso
+    "Agrega un transportador a un curso"
     addTransportadorToCurso(idCurso: Int!, cedulaTransportador: String!): Curso
+    "Elimina a un transportador de un curso"
     deleteTransportadorFromCurso(
       idCurso: Int!
       cedulaTransportador: String!
     ): Curso
   }
 
+  "Input para crear un curso"
   input CursoInput {
+    "Nombre del curso"
     nombre: String!
+    "Lugar del curso"
     lugar: String!
+    "Fecha del curso"
     fecha: Date!
   }
 
+  "Input para actualizar un curso"
   input CursoUpdateInput {
+    "Nombre del curso"
     nombre: String
+    "Lugar del curso"
     lugar: String
+    "Fecha del curso"
     fecha: Date
   }
 `;

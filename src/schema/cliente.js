@@ -8,44 +8,76 @@ const Cliente = gql`
     cliente(cedula: String!): Cliente
   }
 
+  "Clientes de la empresa"
   type Cliente {
+    "Cédula del cliente"
     cedula: String!
+    "Nombre del cliente"
     nombre: String!
+    "Apellido del cliente"
     apellido: String!
+    "Teléfono del cliente"
     telefono: String!
+    "Teléfono alternativo del cliente"
     telefonoAlternativo: String
+    "Email del cliente"
     email: String!
+    "Dirección del cliente"
     direccion: Direccion
+    "Recargas hechas por el cliente"
     recargas: [Recarga]!
+    "Retiros hechos por el cliente"
     retiros: [RetiroCliente]!
+    "Envíos hechos por el cliente"
     encomiendasEnviadas: [Encomienda]!
+    "Envíos recibidos por el cliente"
     encomiendasRecibidas: [Encomienda]!
+    "Saldo del cliente"
     saldo: Float!
   }
 
   extend type Mutation {
+    "Crea un cliente"
     createCliente(cliente: ClienteInput!): Cliente
+    "Actualiza un cliente"
     updateCliente(cedula: String!, cliente: ClienteUpdateInput!): Cliente
+    "Elimina un cliente"
     deleteCliente(cedula: String!): Cliente
   }
 
+  "Input para crear un cliente"
   input ClienteInput {
+    "Cédula del cliente"
     cedula: String!
+    "Nombre del cliente"
     nombre: String!
+    "Apellido del cliente"
     apellido: String!
+    "Teléfono del cliente"
     telefono: String!
+    "Teléfono alternativo del cliente"
     telefonoAlternativo: String
+    "Email del cliente"
     email: String!
+    "Id de la dirección del cliente"
     idDireccion: Int!
   }
 
+  "Input para actualizar un cliente"
   input ClienteUpdateInput {
+    "Cédula del cliente"
     cedula: String
+    "Nombre del cliente"
     nombre: String
+    "Apellido del cliente"
     apellido: String
+    "Teléfono del cliente"
     telefono: String
+    "Teléfono alternativo del cliente"
     telefonoAlternativo: String
+    "Email del cliente"
     email: String
+    "Id de la dirección del cliente"
     idDireccion: Int
   }
 `;

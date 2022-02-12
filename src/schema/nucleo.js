@@ -6,31 +6,50 @@ const Nucleo = gql`
     nucleo(id: Int!): Nucleo
   }
 
+  "Núcleos de la empresa"
   type Nucleo {
+    "Id del núcleo"
     id: Int!
+    "Nombre del núcleo"
     nombre: String!
+    "Teléfono del núcleo"
     telefono: String!
+    "Teléfono alternativo del núcleo"
     direccion: Direccion!
+    "Transportadores ubicados en este núcleo"
     transportadores: [Transportador]!
+    "Encomiendas enviadas por este núcleo"
     encomiendasEnviadas: [Encomienda]!
+    "Encomiendas recibidas por este núcleo"
     encomiendasRecibidas: [Encomienda]!
   }
 
   extend type Mutation {
+    "Crea un núcleo"
     createNucleo(nucleo: NucleoInput!): Nucleo
+    "Actualiza un núcleo"
     updateNucleo(id: Int!, nucleo: NucleoUpdateInput!): Nucleo
+    "Elimina un núcleo"
     deleteNucleo(id: Int!): Nucleo
   }
 
+  "Input para crear un núcleo"
   input NucleoInput {
+    "Nombre del núcleo"
     nombre: String!
+    "Teléfono del núcleo"
     telefono: String!
+    "Id de la direccion del núcleo"
     idDireccion: Int!
   }
 
+  "Input para actualizar un núcleo"
   input NucleoUpdateInput {
+    "Nombre del núcleo"
     nombre: String
+    "Teléfono del núcleo"
     telefono: String
+    "Id de la direccion del núcleo"
     idDireccion: Int
   }
 `;

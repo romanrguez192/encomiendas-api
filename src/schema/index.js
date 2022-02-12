@@ -34,10 +34,12 @@ const typeDefs = gql`
   scalar DateTime
 
   type Query {
+    "Consulta que retorna los autores de la API"
     autores: [String!]!
   }
 
   type Mutation {
+    "Mutation que retorna los autores de la API"
     autores: [String!]!
   }
 `;

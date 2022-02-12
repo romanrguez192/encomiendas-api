@@ -2,28 +2,44 @@ const { gql } = require("apollo-server-express");
 
 const Vehiculo = gql`
   extend type Query {
+    "Consulta que retorna todos los vehículos"
     vehiculos: [Vehiculo]!
+    "Consulta que retorna un vehículo por id"
     vehiculo(id: Int!): Vehiculo
   }
 
+  "Vehículos de los transportadores"
   interface Vehiculo {
+    "Id del vehículo"
     id: Int!
+    "Color del vehículo"
     color: String!
+    "Tipo de vehículo"
     tipo: String!
+    "Transportador al que le pertenece el vehículo"
     transportador: Transportador!
   }
 
   extend type Mutation {
+    "Actualiza un vehículo"
     updateVehiculo(id: Int!, vehiculo: VehiculoInput): Vehiculo
+    "Elimina un vehículo"
     deleteVehiculo(id: Int!): Vehiculo
   }
 
+  "Input para actualizar un vehículo"
   input VehiculoInput {
+    "Color del vehículo"
     color: String
+    "Tipo de vehículo"
     tipo: String
+    "Cédula del transportador al que pertenece el vehículo"
     cedulaTransportador: String
+    "Marca del vehículo"
     marca: String
+    "Modelo del vehículo"
     modelo: String
+    "Placa del vehículo"
     placa: String
   }
 `;

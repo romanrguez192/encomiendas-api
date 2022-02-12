@@ -2,39 +2,64 @@ const { gql } = require("apollo-server-express");
 
 const Direccion = gql`
   extend type Query {
+    "Consulta que retorna todas las direcciones"
     direcciones: [Direccion]!
+    "Consulta que retorna las direcciones cuyos campos coincidan con los pasados por parámetro"
     direccionesWhere(direccion: DireccionUpdateInput!): [Direccion]!
+    "Consulta que retorna una direccion por su id"
     direccion(id: Int!): Direccion
   }
 
+  "Direcciones"
   type Direccion {
+    "Id de la direccion"
     id: Int!
+    "País de la direccion"
     pais: String!
+    "Ciudad de la direccion"
     ciudad: String!
+    "Estado de la direccion"
     estado: String!
+    "Parroquia de la direccion"
     parroquia: String!
+    "Clientes ubicados en esta direccion"
     clientes: [Cliente]!
+    "Núcleos ubicados en esta direccion"
     nucleos: [Nucleo]!
+    "Transportadores ubicados en esta direccion"
     transportadores: [Transportador]!
   }
 
   extend type Mutation {
+    "Crea una direccion"
     createDireccion(direccion: DireccionInput!): Direccion
+    "Actualiza una direccion"
     updateDireccion(id: Int!, direccion: DireccionUpdateInput!): Direccion
+    "Elimina una direccion"
     deleteDireccion(id: Int!): Direccion
   }
 
+  "Input para crear una direccion"
   input DireccionInput {
+    "País de la direccion"
     pais: String!
+    "Ciudad de la direccion"
     ciudad: String!
+    "Estado de la direccion"
     estado: String!
+    "Parroquia de la direccion"
     parroquia: String!
   }
 
+  "Input para actualizar una direccion"
   input DireccionUpdateInput {
+    "País de la direccion"
     pais: String
+    "Ciudad de la direccion"
     ciudad: String
+    "Estado de la direccion"
     estado: String
+    "Parroquia de la direccion"
     parroquia: String
   }
 `;

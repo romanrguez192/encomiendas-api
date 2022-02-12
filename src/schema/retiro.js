@@ -2,27 +2,42 @@ const { gql } = require("apollo-server-express");
 
 const Retiro = gql`
   extend type Query {
+    "Consulta que retorna todos los retiros"
     retiros: [Retiro]!
+    "Consulta que retorna un retiro por id"
     retiro(id: Int!): Retiro
   }
 
+  "Retiros hechos por clientes o transportadores"
   interface Retiro {
+    "Id del retiro"
     id: Int!
+    "Precio del retiro en dólares"
     precio: Float!
+    "Saldo retirado"
     saldo: Float!
+    "Fecha del retiro"
     fecha: Date!
   }
 
   extend type Mutation {
+    "Actualiza un retiro"
     updateRetiro(id: Int!, retiro: RetiroInput!): Retiro
+    "Elimina un retiro"
     deleteRetiro(id: Int!): Retiro
   }
 
+  "Input para actualizar un retiro"
   input RetiroInput {
+    "Precio del retiro en dólares"
     precio: Float
+    "Saldo retirado"
     saldo: Float
+    "Fecha del retiro"
     fecha: Date
+    "Cédula del cliente que realiza el retiro"
     cedulaCliente: String
+    "Cédula del transportador que realiza el retiro"
     cedulaTransportador: String
   }
 `;

@@ -2,22 +2,32 @@ const { gql } = require("apollo-server-express");
 
 const Bicicleta = gql`
   extend type Query {
+    "Consulta que retorna todas las bicicletas"
     bicicletas: [Bicicleta]!
   }
 
+  "Bicicletas de los transportadores"
   type Bicicleta implements Vehiculo {
+    "Id de la bicicleta"
     id: Int!
+    "Color de la bicicleta"
     color: String!
+    "Tipo de vehículo"
     tipo: String!
+    "Transportador al que le pertenece la bicicleta"
     transportador: Transportador!
   }
 
   extend type Mutation {
+    "Crea una bicicleta"
     createBicicleta(bicicleta: BicicletaInput): Bicicleta
   }
 
+  "Input para crear una bicicleta"
   input BicicletaInput {
+    "Color de la bicicleta"
     color: String!
+    "Cédula del transportador al que le pertenece la bicicleta"
     cedulaTransportador: String!
   }
 `;
