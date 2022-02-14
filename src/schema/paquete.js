@@ -4,6 +4,8 @@ const Paquete = gql`
   extend type Query {
     "Consulta que retorna todos los paquetes"
     paquetes: [Paquete]!
+    "Consulta que retorna los paquetes cuyos campos coincidan con los pasados por parámetro"
+    paquetesWhere(paquete: PaqueteUpdateInput!): [Paquete]!
     "Consulta que retorna un paquete por su id"
     paquete(id: Int!): Paquete
   }
@@ -86,6 +88,11 @@ const paqueteResolvers = {
   Query: {
     paquetes: (_parent, _args, context) => {
       return context.prisma.paquete.findMany();
+    },
+    paquetesWhere: (_parent, args, context) => {
+      return context.prisma.paquete.findMany({
+        where: args.paquete,
+      });
     },
     paquete: (_parent, args, context) => {
       return context.prisma.paquete.findUnique({

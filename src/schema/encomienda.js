@@ -4,6 +4,8 @@ const Encomienda = gql`
   extend type Query {
     "Consulta que retorna todas las encomiendas"
     encomiendas: [Encomienda]!
+    "Consulta que retorna las encomiendas cuyos campos coincidan con los pasados por parámetro"
+    encomiendasWhere(encomienda: EncomiendaInput!): [Encomienda]!
     "Consulta que retorna una encomienda por su id"
     encomienda(id: Int!): Encomienda
   }
@@ -76,6 +78,11 @@ const encomiendaResolvers = {
   Query: {
     encomiendas: (_parent, _args, context) => {
       return context.prisma.encomienda.findMany();
+    },
+    encomiendasWhere: (_parent, args, context) => {
+      return context.prisma.encomienda.findMany({
+        where: args.encomienda,
+      });
     },
     encomienda: (_parent, args, context) => {
       return context.prisma.encomienda.findUnique({

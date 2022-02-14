@@ -4,6 +4,8 @@ const Vehiculo = gql`
   extend type Query {
     "Consulta que retorna todos los vehículos"
     vehiculos: [Vehiculo]!
+    "Consulta que retorna los vehículos cuyos campos coincidan con los pasados por parámetro"
+    vehiculosWhere(vehiculo: VehiculoInput!): [Vehiculo]!
     "Consulta que retorna un vehículo por id"
     vehiculo(id: Int!): Vehiculo
   }
@@ -48,6 +50,11 @@ const vehiculoResolvers = {
   Query: {
     vehiculos: (_parent, _args, context) => {
       return context.prisma.vehiculo.findMany();
+    },
+    vehiculosWhere: (_parent, args, context) => {
+      return context.prisma.vehiculo.findMany({
+        where: args.vehiculo,
+      });
     },
     vehiculo: (_parent, args, context) => {
       return context.prisma.vehiculo.findUnique({

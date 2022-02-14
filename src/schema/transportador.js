@@ -4,6 +4,10 @@ const Transportador = gql`
   extend type Query {
     "Consulta que retorna todos los transportadores"
     transportadores: [Transportador]!
+    "Consulta que retorna los transportadores cuyos campos coincidan con los pasados por parámetro"
+    transportadoresWhere(
+      transportador: TransportadorUpdateInput!
+    ): [Transportador]!
     "Consulta que retorna un transportador por id"
     transportador(cedula: String!): Transportador
   }
@@ -131,6 +135,11 @@ const transportadorResolvers = {
   Query: {
     transportadores: (_parent, _args, context) => {
       return context.prisma.transportador.findMany();
+    },
+    transportadoresWhere: (_parent, args, context) => {
+      return context.prisma.transportador.findMany({
+        where: args.transportador,
+      });
     },
     transportador: (_parent, args, context) => {
       return context.prisma.transportador.findUnique({

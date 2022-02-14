@@ -4,6 +4,8 @@ const Curso = gql`
   extend type Query {
     "Consulta que retorna todos los cursos"
     cursos: [Curso]!
+    "Consulta que retorna los cursos cuyos campos coincidan con los pasados por parámetro"
+    cursosWhere(curso: CursoUpdateInput!): [Curso]!
     "Consulta que retorna un curso por su id"
     curso(id: Int!): Curso
   }
@@ -63,6 +65,11 @@ const cursoResolvers = {
   Query: {
     cursos: (_parent, _args, context) => {
       return context.prisma.curso.findMany();
+    },
+    cursosWhere: (_parent, args, context) => {
+      return context.prisma.curso.findMany({
+        where: args.curso,
+      });
     },
     curso: (_parent, args, context) => {
       return context.prisma.curso.findUnique({

@@ -2,7 +2,11 @@ const { gql } = require("apollo-server-express");
 
 const Nucleo = gql`
   extend type Query {
+    "Consulta que retorna todos los nucleos"
     nucleos: [Nucleo]!
+    "Consulta que retorna los nucleos cuyos campos coincidan con los pasados por parámetro"
+    nucleosWhere(nucleo: NucleoUpdateInput!): [Nucleo]!
+    "Consulta que retorna un nucleo por su id"
     nucleo(id: Int!): Nucleo
   }
 
@@ -58,6 +62,11 @@ const nucleoResolvers = {
   Query: {
     nucleos: (_parent, _args, context) => {
       return context.prisma.nucleo.findMany();
+    },
+    nucleosWhere: (_parent, args, context) => {
+      return context.prisma.nucleo.findMany({
+        where: args.nucleo,
+      });
     },
     nucleo: (_parent, args, context) => {
       return context.prisma.nucleo.findUnique({

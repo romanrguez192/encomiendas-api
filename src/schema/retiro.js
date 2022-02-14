@@ -4,6 +4,8 @@ const Retiro = gql`
   extend type Query {
     "Consulta que retorna todos los retiros"
     retiros: [Retiro]!
+    "Consulta que retorna los retiros cuyos campos coincidan con los pasados por parámetro"
+    retirosWhere(retiro: RetiroInput!): [Retiro]!
     "Consulta que retorna un retiro por id"
     retiro(id: Int!): Retiro
   }
@@ -46,6 +48,11 @@ const retiroResolvers = {
   Query: {
     retiros: (_parent, _args, context) => {
       return context.prisma.retiro.findMany();
+    },
+    retirosWhere: (_parent, args, context) => {
+      return context.prisma.retiro.findMany({
+        where: args.retiro,
+      });
     },
     retiro: (_parent, args, context) => {
       return context.prisma.retiro.findUnique({

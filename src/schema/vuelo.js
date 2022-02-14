@@ -4,6 +4,8 @@ const Vuelo = gql`
   extend type Query {
     "Consulta que retorna todos los vuelos"
     vuelos: [Vuelo]!
+    "Consulta que retorna los vuelos cuyos campos coincidan con los pasados por parámetro"
+    vuelosWhere(vuelo: VueloUpdateInput!): [Vuelo]!
     "Consulta que retorna un vuelo por id"
     vuelo(id: Int!): Cliente
   }
@@ -86,6 +88,11 @@ const vueloResolvers = {
   Query: {
     vuelos: (_parent, _args, context) => {
       return context.prisma.vuelo.findMany();
+    },
+    vuelosWhere: (_parent, args, context) => {
+      return context.prisma.vuelo.findMany({
+        where: args.vuelo,
+      });
     },
     vuelo: (_parent, args, context) => {
       return context.prisma.vuelo.findUnique({

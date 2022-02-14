@@ -4,6 +4,8 @@ const Cliente = gql`
   extend type Query {
     "Consulta que retorna todos los clientes"
     clientes: [Cliente]!
+    "Consulta que retorna los clientes cuyos campos coincidan con los pasados por parámetro"
+    clientesWhere(cliente: ClienteUpdateInput!): [Cliente]!
     "Consulta que retorna un cliente dada su cédula"
     cliente(cedula: String!): Cliente
   }
@@ -86,6 +88,11 @@ const clienteResolvers = {
   Query: {
     clientes: (_parent, _args, context) => {
       return context.prisma.cliente.findMany();
+    },
+    clientesWhere: (_parent, args, context) => {
+      return context.prisma.cliente.findMany({
+        where: args.cliente,
+      });
     },
     cliente: (_parent, args, context) => {
       return context.prisma.cliente.findUnique({

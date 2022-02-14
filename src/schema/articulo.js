@@ -4,6 +4,8 @@ const Articulo = gql`
   extend type Query {
     "Consulta que retorna todos los artículos"
     articulos: [Articulo]!
+    "Consulta que retorna los artículos cuyos campos coincidan con los pasados por parámetro"
+    articulosWhere(articulo: ArticuloUpdateInput!): [Articulo]!
     "Consulta que retorna un artículo por el id de su paquete y el número del artículo"
     articulo(idPaquete: Int!, numero: Int!): Articulo
   }
@@ -62,6 +64,11 @@ const articuloResolvers = {
   Query: {
     articulos: (_parent, _args, context) => {
       return context.prisma.articulo.findMany();
+    },
+    articulosWhere: (_parent, args, context) => {
+      return context.prisma.articulo.findMany({
+        where: args.articulo,
+      });
     },
     articulo: (_parent, args, context) => {
       return context.prisma.articulo.findUnique({

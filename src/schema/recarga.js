@@ -4,6 +4,8 @@ const Recarga = gql`
   extend type Query {
     "Consulta que retorna todas las recargas"
     recargas: [Recarga]!
+    "Consulta que retorna las recargas cuyos campos coincidan con los pasados por parámetro"
+    recargasWhere(recarga: RecargaUpdateInput!): [Recarga]!
     "Consulta que retorna una recarga por su id"
     recarga(id: Int!): Recarga
   }
@@ -60,6 +62,11 @@ const recargaResolvers = {
   Query: {
     recargas: (_parent, _args, context) => {
       return context.prisma.recarga.findMany();
+    },
+    recargasWhere: (_parent, args, context) => {
+      return context.prisma.recarga.findMany({
+        where: args.recarga,
+      });
     },
     recarga: (_parent, args, context) => {
       return context.prisma.recarga.findUnique({
