@@ -12,6 +12,15 @@ const formatError = (err) => {
     };
   }
 
+  if (
+    err.message.includes("delete") &&
+    err.message.includes("Foreign key constraint failed")
+  ) {
+    return {
+      message: "No se puede eliminar porque tiene datos relacionados",
+    };
+  }
+
   if (err.message.includes("Foreign key constraint failed")) {
     return {
       message:
