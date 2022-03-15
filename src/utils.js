@@ -1,8 +1,7 @@
 const formatError = (err) => {
   if (err.message.includes("not found")) {
     return {
-      message:
-        "No se encontró " + err.message.match(/context\.prisma\.(.*)\./)[1],
+      message: "No se encontró el registro para efectuar la operación",
     };
   }
 
@@ -13,7 +12,7 @@ const formatError = (err) => {
   }
 
   if (
-    err.message.includes("delete") &&
+    err.path.some((p) => p.includes("delete")) &&
     err.message.includes("Foreign key constraint failed")
   ) {
     return {
@@ -23,10 +22,7 @@ const formatError = (err) => {
 
   if (err.message.includes("Foreign key constraint failed")) {
     return {
-      message:
-        err.message.match(
-          /Foreign key constraint failed on the field: `(.*)`/
-        )[1] + " no se encontró",
+      message: "El registro indicado no existe",
     };
   }
 
@@ -36,10 +32,7 @@ const formatError = (err) => {
     )
   ) {
     return {
-      message:
-        "Ya existe " +
-        err.message.match(/context\.prisma\.(.*)\./)[1] +
-        " con estos datos únicos",
+      message: "Ya existe este registro",
     };
   }
 
